@@ -9,56 +9,42 @@ use Gemini\Enums\MimeType;
 use Gemini\Enums\Role;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GeminiService
 {
-    /**
-     * Daftar model Gemini (Free Tier / Hemat) yang akan dicoba secara berurutan.
-     * Jika model pertama limit/error, otomatis beralih ke model berikutnya.
-     */
     protected array $fallbackModels = [
-        // --- Lini Utama Gemini 3.x & 3.5 ---
         'gemini-3.5-flash',
         'gemini-3.5-flash-lite',
         'gemini-3.1-flash-lite',
-
-        // --- Lini Legacy Gemini 2.5 ---
         'gemini-2.5-flash',
         'gemini-2.5-flash-lite',
         'gemini-2.5-pro',
-
-        // --- Lini Klasik Gemini 1.5 ---
         'gemini-1.5-flash',
         'gemini-1.5-pro',
     ];
 
-    /**
-     * Kirim prompt ke Gemini API dengan System Prompt, Chat History, dan Banyak File/Gambar
-     */
     public function ask(
         ?string $systemPrompt = null,
         ?string $userMessage = null,
         array $chatHistory = [],
-        array $files = [] // Diubah menjadi Array untuk mendukung banyak file
+        array $files = [],
+        array $subjectFiles = [] // <-- Tambahan parameter file subject
     ): string {
-        if (empty($userMessage) && empty($files)) {
+        if (empty($userMessage) && empty($files) && empty($subjectFiles)) {
             return 'Pesan atau gambar tidak boleh kosong.';
         }
 
-        // Loop mencoba setiap model jika terjadi error/limit pada model sebelumnya
         foreach ($this->fallbackModels as $modelName) {
             try {
-                // 1. Inisialisasi Model saat ini
                 $model = Gemini::generativeModel($modelName);
 
-                // 2. Pasang System Instruction jika ada
                 if (!empty($systemPrompt)) {
                     $model = $model->withSystemInstruction(
                         Content::parse(part: $systemPrompt)
                     );
                 }
 
-                // 3. Format Chat History sesuai SDK
                 $formattedHistory = [];
                 foreach ($chatHistory as $chat) {
                     $role = ($chat['role'] === 'user') ? Role::USER : Role::MODEL;
@@ -71,14 +57,29 @@ class GeminiService
                     }
                 }
 
-                // 4. Susun Konten Pesan Terbaru & Banyak Gambar/File
                 $currentParts = [];
 
                 if (!empty($userMessage)) {
                     $currentParts[] = $userMessage;
                 }
 
-                // Loop setiap file yang dikirimkan
+                // 1. Loop file referensi bawaan dari Subject (tersimpan di Storage Public)
+                if (!empty($subjectFiles)) {
+                    foreach ($subjectFiles as $sFile) {
+                        if (isset($sFile['path']) && Storage::disk('public')->exists($sFile['path'])) {
+                            $fullPath = Storage::disk('public')->path($sFile['path']);
+                            $mimeRaw = mime_content_type($fullPath);
+                            $mimeType = MimeType::tryFrom($mimeRaw) ?? MimeType::IMAGE_JPEG;
+
+                            $currentParts[] = new Blob(
+                                mimeType: $mimeType,
+                                data: base64_encode(file_get_contents($fullPath))
+                            );
+                        }
+                    }
+                }
+
+                // 2. Loop file yang dikirim langsung oleh siswa dari input chat
                 if (!empty($files)) {
                     foreach ($files as $file) {
                         if ($file instanceof UploadedFile) {
@@ -91,7 +92,6 @@ class GeminiService
                     }
                 }
 
-                // 5. Eksekusi Request ke Gemini API
                 if (!empty($formattedHistory)) {
                     $chatSession = $model->startChat(history: $formattedHistory);
                     $response = $chatSession->sendMessage($currentParts);
@@ -99,18 +99,13 @@ class GeminiService
                     $response = $model->generateContent(...$currentParts);
                 }
 
-                // Berhasil mendapatkan balasan, langsung kembalikan teksnya
                 return $response->text();
             } catch (\Throwable $e) {
-                // Catat detail error ke file log
                 Log::warning("Gemini API Error pada model [{$modelName}]: " . $e->getMessage());
-
-                // Lanjut ke model berikutnya di siklus loop
                 continue;
             }
         }
 
-        // 6. Jika SEMUA model gagal/limit
         return 'Maaf, layanan AI saat ini sedang padat. Silakan coba beberapa saat lagi.';
     }
 }

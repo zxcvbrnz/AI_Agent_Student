@@ -168,6 +168,61 @@
                                 @enderror
                             </div>
 
+                            <!-- Tambahkan di dalam form modal subject-manager.blade.php, setelah bagian textarea System Prompt AI -->
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">File Referensi
+                                    / Lampiran Subject (Opsional)</label>
+                                <input type="file" wire:model="files" multiple
+                                    class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition cursor-pointer">
+
+                                <div wire:loading wire:target="files" class="text-xs text-indigo-600 mt-1">Mengunggah
+                                    file...</div>
+
+                                @error('files.*')
+                                    <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
+                                @enderror
+
+                                <!-- Preview File Lama -->
+                                @if (!empty($existingFiles))
+                                    <div class="mt-2 space-y-1">
+                                        <span class="text-[10px] font-semibold text-slate-400 uppercase">File
+                                            Tersimpan:</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach ($existingFiles as $index => $file)
+                                                <div
+                                                    class="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg text-xs text-slate-700 border border-slate-200">
+                                                    <span class="truncate max-w-[150px]">{{ $file['name'] }}</span>
+                                                    <button type="button"
+                                                        wire:click="removeExistingFile({{ $index }})"
+                                                        class="text-slate-400 hover:text-rose-500 font-bold">&times;</button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <!-- Preview File Baru -->
+                                @if (!empty($files))
+                                    <div class="mt-2 space-y-1">
+                                        <span class="text-[10px] font-semibold text-slate-400 uppercase">File Baru
+                                            di-Upload:</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach ($files as $index => $file)
+                                                <div
+                                                    class="flex items-center gap-1.5 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs text-indigo-700 border border-indigo-200">
+                                                    <span
+                                                        class="truncate max-w-[150px]">{{ $file->getClientOriginalName() }}</span>
+                                                    <button type="button"
+                                                        wire:click="removeNewFile({{ $index }})"
+                                                        class="text-indigo-400 hover:text-rose-500 font-bold">&times;</button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
                             <div class="flex justify-end gap-2 pt-4 border-t border-slate-100">
                                 <button type="button" wire:click="closeModal"
                                     class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition">

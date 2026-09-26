@@ -87,6 +87,8 @@ class StudentChat extends Component
         $subject = Subject::find($this->selectedSubjectId);
         if (!$subject) return;
 
+        $subjectFiles = $subject->files ?? [];
+
         $finalPrompt = $inputPrompt ?: (!empty($this->files) ? 'Tolong analisa file/gambar ini.' : '');
 
         // 1. Simpan file secara permanen ke folder storage disk public
@@ -118,7 +120,8 @@ class StudentChat extends Component
                 systemPrompt: $subject->system_prompt . " Pastikan untuk TIDAK menjawab jika pertanyaannya tidak relevan dengan " . $subject->name . ".",
                 userMessage: $finalPrompt,
                 chatHistory: $previousHistory,
-                files: $this->files
+                files: $this->files,
+                subjectFiles: $subjectFiles
             );
 
             // 3. SIMPAN KE DATABASE PERMANEN
