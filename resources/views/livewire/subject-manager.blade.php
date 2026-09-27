@@ -171,30 +171,42 @@
                             <!-- File Referensi / Lampiran Subject -->
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">
-                                    File Referensi / Lampiran Subject <span class="normal-case text-slate-400 font-normal">(Opsional)</span>
+                                    File Referensi / Lampiran Subject <span
+                                        class="normal-case text-slate-400 font-normal">(Opsional)</span>
                                 </label>
 
                                 <!-- Zone Drop / Upload File -->
-                                <div class="relative border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-slate-50/50 hover:bg-indigo-50/30 rounded-xl p-4 transition group text-center cursor-pointer">
-                                    <input type="file" wire:model="files" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div
+                                    class="relative border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-slate-50/50 hover:bg-indigo-50/30 rounded-xl p-4 transition group text-center cursor-pointer">
+                                    <input type="file" wire:model="files" multiple
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                     <div class="flex flex-col items-center justify-center gap-1">
-                                        <div class="p-2 bg-white rounded-full shadow-sm text-indigo-600 border border-slate-100 group-hover:scale-110 transition-transform">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        <div
+                                            class="p-2 bg-white rounded-full shadow-sm text-indigo-600 border border-slate-100 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                             </svg>
                                         </div>
                                         <p class="text-xs font-medium text-slate-700 mt-1">
-                                            <span class="text-indigo-600 font-semibold">Klik untuk memilih</span> atau tarik file ke sini
+                                            <span class="text-indigo-600 font-semibold">Klik untuk memilih</span> atau
+                                            tarik file ke sini
                                         </p>
                                         <p class="text-[10px] text-slate-400">PDF, DOCX, TXT, atau gambar</p>
                                     </div>
                                 </div>
 
                                 <!-- Indicator Loading -->
-                                <div wire:loading wire:target="files" class="flex items-center gap-2 text-xs text-indigo-600 mt-2 font-medium">
-                                    <svg class="animate-spin w-3.5 h-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                <div wire:loading wire:target="files"
+                                    class="flex items-center gap-2 text-xs text-indigo-600 mt-2 font-medium">
+                                    <svg class="animate-spin w-3.5 h-3.5 text-indigo-600" fill="none"
+                                        viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                                            stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
                                     </svg>
                                     <span>Mengunggah file...</span>
                                 </div>
@@ -206,49 +218,87 @@
                                 <!-- Card Grid Kotak File Tersimpan -->
                                 @if (!empty($existingFiles))
                                     <div class="mt-3 space-y-1.5">
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">File Tersimpan</span>
+                                        <span
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">File
+                                            Tersimpan</span>
                                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                                             @foreach ($existingFiles as $index => $file)
                                                 @php
-                                                    $ext = strtoupper(pathinfo($file['name'], PATHINFO_EXTENSION) ?: ($file['type'] ?? 'FILE'));
-                                                    $size = isset($file['size']) 
-                                                        ? ($file['size'] >= 1048576 
-                                                            ? number_format($file['size'] / 1048576, 1) . ' MB' 
-                                                            : number_format($file['size'] / 1024, 0) . ' KB') 
-                                                        : null;
+                                                    // Ambil path dan nama file (bisa bentuk Array atau String)
+                                                    $fileName = is_array($file)
+                                                        ? $file['name'] ?? ($file['path'] ?? '')
+                                                        : $file;
+                                                    $filePath = is_array($file)
+                                                        ? $file['path'] ?? ($file['name'] ?? '')
+                                                        : $file;
+                                                    $ext = strtoupper(
+                                                        pathinfo($fileName, PATHINFO_EXTENSION) ?: 'FILE',
+                                                    );
+
+                                                    // Hitung ukuran dari array, properti, atau cek langsung ke Disk Storage
+                                                    $fileSizeBytes = 0;
+                                                    if (is_array($file) && isset($file['size'])) {
+                                                        $fileSizeBytes = $file['size'];
+                                                    } elseif (
+                                                        \Illuminate\Support\Facades\Storage::disk('public')->exists(
+                                                            $filePath,
+                                                        )
+                                                    ) {
+                                                        $fileSizeBytes = \Illuminate\Support\Facades\Storage::disk(
+                                                            'public',
+                                                        )->size($filePath);
+                                                    }
+
+                                                    $sizeDisplay =
+                                                        $fileSizeBytes > 0
+                                                            ? ($fileSizeBytes >= 1048576
+                                                                ? number_format($fileSizeBytes / 1048576, 1) . ' MB'
+                                                                : number_format($fileSizeBytes / 1024, 0) . ' KB')
+                                                            : 'N/A';
                                                 @endphp
-                                                <div class="relative group bg-slate-50 border border-slate-200/80 rounded-xl p-3 flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition">
+                                                <div
+                                                    class="relative group bg-slate-50 border border-slate-200/80 rounded-xl p-3 flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition">
                                                     <!-- Header Card: Badge Tipe & Button Delete -->
                                                     <div class="flex items-center justify-between mb-2">
-                                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 uppercase tracking-wider">
+                                                        <span
+                                                            class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 uppercase tracking-wider">
                                                             {{ $ext }}
                                                         </span>
-                                                        <button type="button" 
+                                                        <button type="button"
                                                             wire:click="removeExistingFile({{ $index }})"
                                                             class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1 rounded-md transition"
                                                             title="Hapus File">
-                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            <svg class="w-3.5 h-3.5" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                             </svg>
                                                         </button>
                                                     </div>
 
                                                     <!-- Center Card: Icon & Nama File -->
                                                     <div class="flex flex-col items-center text-center my-1">
-                                                        <div class="p-2 bg-white rounded-lg text-slate-500 border border-slate-100 shadow-2xs mb-1.5">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        <div
+                                                            class="p-2 bg-white rounded-lg text-slate-500 border border-slate-100 shadow-2xs mb-1.5">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                             </svg>
                                                         </div>
-                                                        <p class="text-xs font-semibold text-slate-700 truncate w-full" title="{{ $file['name'] }}">
-                                                            {{ $file['name'] }}
+                                                        <p class="text-xs font-semibold text-slate-700 truncate w-full"
+                                                            title="{{ basename($fileName) }}">
+                                                            {{ basename($fileName) }}
                                                         </p>
                                                     </div>
 
                                                     <!-- Footer Card: Informasi Ukuran File -->
-                                                    <div class="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-400">
+                                                    <div
+                                                        class="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-400">
                                                         <span>Ukuran:</span>
-                                                        <span class="font-medium text-slate-500">{{ $size ?? '-' }}</span>
+                                                        <span
+                                                            class="font-medium text-slate-600">{{ $sizeDisplay }}</span>
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -259,48 +309,62 @@
                                 <!-- Card Grid File Baru (Diupload) -->
                                 @if (!empty($files))
                                     <div class="mt-3 space-y-1.5">
-                                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">File Baru Di-Upload</span>
+                                        <span
+                                            class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">File
+                                            Baru Di-Upload</span>
                                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                                             @foreach ($files as $index => $file)
                                                 @php
                                                     $ext = strtoupper($file->getClientOriginalExtension() ?: 'FILE');
                                                     $fileSize = $file->getSize();
-                                                    $sizeStr = $fileSize >= 1048576 
-                                                        ? number_format($fileSize / 1048576, 1) . ' MB' 
-                                                        : number_format($fileSize / 1024, 0) . ' KB';
+                                                    $sizeStr =
+                                                        $fileSize >= 1048576
+                                                            ? number_format($fileSize / 1048576, 1) . ' MB'
+                                                            : number_format($fileSize / 1024, 0) . ' KB';
                                                 @endphp
-                                                <div class="relative group bg-indigo-50/50 border border-indigo-200/70 rounded-xl p-3 flex flex-col justify-between hover:border-indigo-300 transition">
+                                                <div
+                                                    class="relative group bg-indigo-50/50 border border-indigo-200/70 rounded-xl p-3 flex flex-col justify-between hover:border-indigo-300 transition">
                                                     <!-- Header Card: Badge Tipe & Button Delete -->
                                                     <div class="flex items-center justify-between mb-2">
-                                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 uppercase tracking-wider">
+                                                        <span
+                                                            class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 uppercase tracking-wider">
                                                             {{ $ext }}
                                                         </span>
-                                                        <button type="button" 
+                                                        <button type="button"
                                                             wire:click="removeNewFile({{ $index }})"
                                                             class="text-indigo-400 hover:text-rose-600 hover:bg-rose-50 p-1 rounded-md transition"
                                                             title="Batal Upload">
-                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            <svg class="w-3.5 h-3.5" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                             </svg>
                                                         </button>
                                                     </div>
 
                                                     <!-- Center Card: Icon & Nama File -->
                                                     <div class="flex flex-col items-center text-center my-1">
-                                                        <div class="p-2 bg-white rounded-lg text-indigo-600 border border-indigo-100 shadow-2xs mb-1.5">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        <div
+                                                            class="p-2 bg-white rounded-lg text-indigo-600 border border-indigo-100 shadow-2xs mb-1.5">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                             </svg>
                                                         </div>
-                                                        <p class="text-xs font-semibold text-indigo-950 truncate w-full" title="{{ $file->getClientOriginalName() }}">
+                                                        <p class="text-xs font-semibold text-indigo-950 truncate w-full"
+                                                            title="{{ $file->getClientOriginalName() }}">
                                                             {{ $file->getClientOriginalName() }}
                                                         </p>
                                                     </div>
 
                                                     <!-- Footer Card: Informasi Ukuran File -->
-                                                    <div class="mt-2 pt-2 border-t border-indigo-100 flex items-center justify-between text-[10px] text-indigo-400">
+                                                    <div
+                                                        class="mt-2 pt-2 border-t border-indigo-100 flex items-center justify-between text-[10px] text-indigo-400">
                                                         <span>Ukuran:</span>
-                                                        <span class="font-medium text-indigo-600">{{ $sizeStr }}</span>
+                                                        <span
+                                                            class="font-medium text-indigo-600">{{ $sizeStr }}</span>
                                                     </div>
                                                 </div>
                                             @endforeach
