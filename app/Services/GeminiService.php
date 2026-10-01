@@ -8,6 +8,7 @@ use Gemini\Data\Content;
 use Gemini\Enums\MimeType;
 use Gemini\Enums\Role;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,6 +35,18 @@ class GeminiService
         if (empty($userMessage) && empty($files) && empty($subjectFiles)) {
             return 'Pesan atau gambar tidak boleh kosong.';
         }
+
+        // --- TAMBAHAN CORE PROMPT SINGLE DATA ---
+        $corePromptData = DB::table('core_promts')->first();
+        $corePromptText = $corePromptData ? trim($corePromptData->promt) : '';
+
+        // Gabungkan core prompt utama dengan system prompt spesifik (jika ada)
+        if (!empty($corePromptText)) {
+            $systemPrompt = !empty($systemPrompt)
+                ? $corePromptText . "\n\n" . $systemPrompt
+                : $corePromptText;
+        }
+        // ----------------------------------------
 
         foreach ($this->fallbackModels as $modelName) {
             try {
