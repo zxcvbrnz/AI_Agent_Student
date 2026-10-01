@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\CorePromt;
 use Gemini\Laravel\Facades\Gemini;
 use Gemini\Data\Blob;
 use Gemini\Data\Content;
@@ -40,7 +41,7 @@ class GeminiService
 
         // --- TAMBAHAN CORE PROMPT SINGLE DATA ---
         // 1. Ambil data core prompt dari database
-        $corePromptData = DB::table('core_promts')->first();
+        $corePromptData = CorePromt::first();
         $corePromptText = $corePromptData ? trim($corePromptData->promt) : '';
 
         if (!empty($corePromptText)) {
