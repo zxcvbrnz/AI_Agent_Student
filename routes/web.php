@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Livewire\StudentChat;
 use App\Livewire\Admin\UserManagement;
+use App\Livewire\ManageCorePrompts;
 use App\Livewire\SubjectManager;
 
 Route::view('/', 'welcome');
@@ -25,6 +26,7 @@ Route::middleware(['auth'])->get('/membership-expired', function () {
 // Route Khusus Admin
 Route::middleware(['auth', 'is.admin'])->prefix('admin')->group(function () {
     Route::get('/users', UserManagement::class)->name('admin.users');
+    Route::get('/core-prompts', ManageCorePrompts::class)->name('admin.core-prompts');
     Route::get('/subjects', SubjectManager::class)->name('admin.subjects');
 });
 
