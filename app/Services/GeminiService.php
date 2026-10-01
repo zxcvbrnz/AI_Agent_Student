@@ -10,16 +10,12 @@ use Gemini\Enums\MimeType;
 use Gemini\Enums\Role;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class GeminiService
 {
     protected array $fallbackModels = [
-        'gemini-3.5-flash',
-        'gemini-3.5-flash-lite',
-        'gemini-3.1-flash-lite',
         'gemini-2.5-flash',
         'gemini-2.5-flash-lite',
         'gemini-2.5-pro',
@@ -33,23 +29,22 @@ class GeminiService
         array $chatHistory = [],
         array $files = [],
         ?string $subjectName = null,
-        array $subjectFiles = [] // <-- Tambahan parameter file subject
+        array $subjectFiles = []
     ): string {
         if (empty($userMessage) && empty($files) && empty($subjectFiles)) {
             return 'Pesan atau gambar tidak boleh kosong.';
         }
 
-        // --- TAMBAHAN CORE PROMPT SINGLE DATA ---
-        // 1. Ambil data core prompt dari database
+        // --- 1. PROSES CORE PROMPT & REPLACEMENT ---
         $corePromptData = CorePromt::first();
         $corePromptText = $corePromptData ? trim($corePromptData->promt) : '';
 
+        $finalSystemInstruction = '';
+
         if (!empty($corePromptText)) {
-            // 2. Siapkan data pengganti (bisa diambil dari Auth / Model Subject)
             $namaUser  = Auth::user()->name ?? 'Siswa';
             $namaMapel = $subjectName ?? 'Mata Pelajaran';
 
-            // 3. Lakukan replacement variabel {{...}}
             $replacements = [
                 '{{NAMA_USER}}'  => $namaUser,
                 '{{NAMA_MAPEL}}' => $namaMapel,
@@ -61,20 +56,25 @@ class GeminiService
                 $corePromptText
             );
 
-            // 4. Gabungkan ke system prompt
-            $systemPrompt = !empty($systemPrompt)
-                ? $corePromptText . "\n\n" . $systemPrompt
-                : $corePromptText;
+            $finalSystemInstruction = $corePromptText;
         }
-        // ----------------------------------------
+
+        // Gabungkan dengan system prompt tambahan (jika ada) dengan pemisah yang jelas
+        if (!empty($systemPrompt)) {
+            $finalSystemInstruction = !empty($finalSystemInstruction)
+                ? $finalSystemInstruction . "\n\n--- PETUNJUK TAMBAHAN ---\n" . $systemPrompt
+                : $systemPrompt;
+        }
+        // -------------------------------------------
 
         foreach ($this->fallbackModels as $modelName) {
             try {
                 $model = Gemini::generativeModel($modelName);
 
-                if (!empty($systemPrompt)) {
+                // Inject System Instruction secara eksplisit
+                if (!empty($finalSystemInstruction)) {
                     $model = $model->withSystemInstruction(
-                        Content::parse(part: $systemPrompt)
+                        Content::parse(part: $finalSystemInstruction)
                     );
                 }
 
@@ -96,7 +96,7 @@ class GeminiService
                     $currentParts[] = $userMessage;
                 }
 
-                // 1. Loop file referensi bawaan dari Subject (tersimpan di Storage Public)
+                // 1. Loop file referensi bawaan dari Subject
                 if (!empty($subjectFiles)) {
                     foreach ($subjectFiles as $sFile) {
                         if (isset($sFile['path']) && Storage::disk('public')->exists($sFile['path'])) {
@@ -112,7 +112,7 @@ class GeminiService
                     }
                 }
 
-                // 2. Loop file yang dikirim langsung oleh siswa dari input chat
+                // 2. Loop file yang dikirim dari input chat
                 if (!empty($files)) {
                     foreach ($files as $file) {
                         if ($file instanceof UploadedFile) {
@@ -134,7 +134,10 @@ class GeminiService
 
                 return $response->text();
             } catch (\Throwable $e) {
-                Log::warning("Gemini API Error pada model [{$modelName}]: " . $e->getMessage());
+                // Log detail error agar bisa dicek di storage/logs/laravel.log
+                Log::error("Gemini API Error pada model [{$modelName}]: " . $e->getMessage(), [
+                    'exception' => $e
+                ]);
                 continue;
             }
         }
