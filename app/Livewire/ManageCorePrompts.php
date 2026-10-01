@@ -59,6 +59,6 @@ class ManageCorePrompts extends Component
 
     public function render()
     {
-        return view('livewire.manage-core-prompts');
+        return view('livewire.manage-core-prompts')->layout('layouts.app');
     }
 }
