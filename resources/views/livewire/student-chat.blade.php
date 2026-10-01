@@ -3,6 +3,7 @@
     optimisticText: '',
     optimisticFiles: [],
     hidePreview: false,
+    isDragging: false,
     adjustHeight(el) {
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 160) + 'px';
@@ -17,6 +18,29 @@
                 $refs.chatContainer.scrollTop = $refs.chatContainer.scrollHeight;
             }
         });
+    },
+    handlePaste(e) {
+        const items = (e.clipboardData || e.originalEvent.clipboardData)?.items;
+        if (!items) return;
+
+        const filesToUpload = [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].kind === 'file') {
+                const file = items[i].getAsFile();
+                if (file) filesToUpload.push(file);
+            }
+        }
+
+        if (filesToUpload.length > 0) {
+            $wire.uploadMultiple('files', filesToUpload);
+        }
+    },
+    handleDrop(e) {
+        this.isDragging = false;
+        const files = e.dataTransfer?.files;
+        if (files && files.length > 0) {
+            $wire.uploadMultiple('files', Array.from(files));
+        }
     },
     async submitChat() {
         let text = this.inputMsg.trim();
@@ -255,7 +279,7 @@
         </div>
     </div>
 
-    <!-- 3. Form Input Chat (Desain Baru ala Gemini Input Bar) -->
+    <!-- 3. Form Input Chat (Dukungan Drag & Drop, Paste Clipboard, dan Keyboard Shortcut Enter) -->
     <div class="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-200">
         <form @submit.prevent="submitChat()" class="max-w-5xl mx-auto space-y-2">
 
@@ -304,9 +328,20 @@
                 </div>
             @endif
 
-            <!-- Bar Input Utama (Satu Kontainer Bulat ala Gemini/ChatGPT) -->
-            <div
+            <!-- Bar Input Utama (Dengan Event Drag-and-Drop & Paste) -->
+            <div @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false"
+                @drop.prevent="handleDrop($event)"
+                :class="{ 'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-50/40': isDragging }"
                 class="relative flex items-end gap-2 bg-slate-50 hover:bg-slate-100/80 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 border border-slate-200 rounded-2xl p-2 transition-all shadow-sm">
+
+                <!-- Visual Overlay saat File di-Drag di Atas Field -->
+                <div x-show="isDragging" x-cloak
+                    class="absolute inset-0 bg-indigo-500/10 rounded-2xl flex items-center justify-center pointer-events-none z-10 backdrop-blur-[1px]">
+                    <span
+                        class="text-xs font-semibold text-indigo-600 bg-white px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100">
+                        Drop file/gambar di sini
+                    </span>
+                </div>
 
                 <!-- Button Upload File -->
                 <label wire:loading.class="opacity-50 pointer-events-none" wire:target="files"
@@ -320,10 +355,10 @@
                     </svg>
                 </label>
 
-                <!-- Textarea Autosize -->
-                <textarea x-ref="chatTextarea" x-model="inputMsg" @input="adjustHeight($el)"
-                    @keydown.enter.exact.prevent="submitChat()" @keydown.enter.shift="/* Baris Baru */" rows="1"
-                    placeholder="Ketik pertanyaan atau unggah file untuk {{ $currentSubject->name ?? 'pelajaran' }}..."
+                <!-- Textarea Autosize (Mendukung Paste & Shortcuts Keyboard) -->
+                <textarea x-ref="chatTextarea" x-model="inputMsg" @input="adjustHeight($el)" @paste="handlePaste($event)"
+                    @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); submitChat(); }" rows="1"
+                    placeholder="Ketik pertanyaan atau unggah/paste file untuk {{ $currentSubject->name ?? 'pelajaran' }}..."
                     class="flex-1 bg-transparent text-slate-900 text-sm focus:outline-none resize-none min-h-[40px] max-h-40 py-2.5 px-1 leading-relaxed border-none focus:ring-0 placeholder-slate-400 no-scrollbar"></textarea>
 
                 <!-- Tombol Kirim -->
