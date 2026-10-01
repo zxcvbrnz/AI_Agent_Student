@@ -65,6 +65,7 @@ class GeminiService
                 ? $finalSystemInstruction . "\n\n--- PETUNJUK TAMBAHAN ---\n" . $systemPrompt
                 : $systemPrompt;
         }
+        dd($finalSystemInstruction);
         // -------------------------------------------
 
         foreach ($this->fallbackModels as $modelName) {
