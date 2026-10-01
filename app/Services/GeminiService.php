@@ -8,6 +8,7 @@ use Gemini\Data\Content;
 use Gemini\Enums\MimeType;
 use Gemini\Enums\Role;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -30,6 +31,7 @@ class GeminiService
         ?string $userMessage = null,
         array $chatHistory = [],
         array $files = [],
+        ?string $subjectName = null,
         array $subjectFiles = [] // <-- Tambahan parameter file subject
     ): string {
         if (empty($userMessage) && empty($files) && empty($subjectFiles)) {
@@ -37,11 +39,28 @@ class GeminiService
         }
 
         // --- TAMBAHAN CORE PROMPT SINGLE DATA ---
+        // 1. Ambil data core prompt dari database
         $corePromptData = DB::table('core_promts')->first();
         $corePromptText = $corePromptData ? trim($corePromptData->promt) : '';
 
-        // Gabungkan core prompt utama dengan system prompt spesifik (jika ada)
         if (!empty($corePromptText)) {
+            // 2. Siapkan data pengganti (bisa diambil dari Auth / Model Subject)
+            $namaUser  = Auth::user()->name ?? 'Siswa';
+            $namaMapel = $subjectName ?? 'Mata Pelajaran';
+
+            // 3. Lakukan replacement variabel {{...}}
+            $replacements = [
+                '{{NAMA_USER}}'  => $namaUser,
+                '{{NAMA_MAPEL}}' => $namaMapel,
+            ];
+
+            $corePromptText = str_replace(
+                array_keys($replacements),
+                array_values($replacements),
+                $corePromptText
+            );
+
+            // 4. Gabungkan ke system prompt
             $systemPrompt = !empty($systemPrompt)
                 ? $corePromptText . "\n\n" . $systemPrompt
                 : $corePromptText;

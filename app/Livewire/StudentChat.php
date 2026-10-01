@@ -121,6 +121,7 @@ class StudentChat extends Component
                 userMessage: $finalPrompt,
                 chatHistory: $previousHistory,
                 files: $this->files,
+                subjectName: $subject->name,
                 subjectFiles: $subjectFiles
             );
 
