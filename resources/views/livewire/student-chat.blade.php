@@ -4,6 +4,8 @@
     optimisticFiles: [],
     hidePreview: false,
     isDragging: false,
+    isPasting: false,
+    dragCounter: 0,
     adjustHeight(el) {
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 160) + 'px';
@@ -32,14 +34,41 @@
         }
 
         if (filesToUpload.length > 0) {
-            $wire.uploadMultiple('files', filesToUpload);
+            this.isPasting = true;
+            $wire.uploadMultiple('files', filesToUpload, () => {
+                this.isPasting = false;
+            }, () => {
+                this.isPasting = false;
+            });
+        }
+    },
+    handleDragEnter(e) {
+        e.preventDefault();
+        this.dragCounter++;
+        if (e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
+            this.isDragging = true;
+        }
+    },
+    handleDragLeave(e) {
+        e.preventDefault();
+        this.dragCounter--;
+        if (this.dragCounter <= 0) {
+            this.dragCounter = 0;
+            this.isDragging = false;
         }
     },
     handleDrop(e) {
+        e.preventDefault();
         this.isDragging = false;
+        this.dragCounter = 0;
         const files = e.dataTransfer?.files;
         if (files && files.length > 0) {
-            $wire.uploadMultiple('files', Array.from(files));
+            this.isPasting = true;
+            $wire.uploadMultiple('files', Array.from(files), () => {
+                this.isPasting = false;
+            }, () => {
+                this.isPasting = false;
+            });
         }
     },
     async submitChat() {
@@ -48,7 +77,6 @@
 
         if (!text && !hasFiles) return;
 
-        // Tangkap preview gambar untuk Optimistic UI
         this.optimisticFiles = [];
         if (hasFiles && $refs.previewContainer) {
             const imgElements = $refs.previewContainer.querySelectorAll('img');
@@ -88,8 +116,28 @@
     destroy() {
         document.body.style.overflow = '';
     }
-}"
-    class="w-full h-[calc(100vh-6rem)] sm:h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)] flex flex-col min-h-0 bg-white overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+}" @dragenter="handleDragEnter($event)" @dragleave="handleDragLeave($event)" @dragover.prevent
+    @drop="handleDrop($event)"
+    class="relative w-full h-[calc(100vh-6rem)] sm:h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)] flex flex-col min-h-0 bg-white overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+
+    <!-- Overlay Drop Zone Luas (Mencakup Seluruh Area Chat) -->
+    <div x-show="isDragging" x-cloak x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute inset-0 bg-indigo-600/10 backdrop-blur-sm z-50 flex flex-col items-center justify-center border-4 border-dashed border-indigo-500 rounded-2xl pointer-events-none p-6 text-center">
+        <div class="bg-white p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 border border-indigo-100">
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+            </div>
+            <p class="text-sm font-bold text-slate-800">Lepaskan file / gambar di sini</p>
+            <p class="text-xs text-slate-500">File akan otomatis ditambahkan ke pesan Anda</p>
+        </div>
+    </div>
+
     @php
         $user = auth()->user();
         $expiresAt = $user->membership_expires_at;
@@ -153,7 +201,6 @@
                         <div
                             class="max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-sm {{ $chat['role'] === 'user' ? 'bg-indigo-600 text-white rounded-br-none shadow-sm' : 'bg-white text-slate-800 rounded-bl-none border border-slate-200 shadow-sm' }}">
 
-                            <!-- Render Lampiran Banyak File/Gambar jika Ada -->
                             @if (!empty($chat['files']))
                                 <div class="flex flex-wrap gap-2 mb-2">
                                     @foreach ($chat['files'] as $fileItem)
@@ -184,7 +231,6 @@
                                 </div>
                             @endif
 
-                            <!-- Tampilan Respon AI dengan Efek Smooth Appearance khas Gemini -->
                             <div x-data="{
                                 fullText: @js($chat['text'] ?? ''),
                                 isAi: @js($chat['role'] !== 'user'),
@@ -241,7 +287,6 @@
                 <div class="flex flex-col items-end">
                     <div
                         class="max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-sm bg-indigo-600 text-white rounded-br-none shadow-sm">
-
                         <template x-if="optimisticFiles.length > 0">
                             <div class="flex flex-wrap gap-2 mb-2">
                                 <template x-for="(imgSrc, idx) in optimisticFiles" :key="idx">
@@ -251,7 +296,6 @@
                                 </template>
                             </div>
                         </template>
-
                         <template x-if="optimisticText">
                             <p x-text="optimisticText" class="whitespace-pre-line"></p>
                         </template>
@@ -260,7 +304,7 @@
                 </div>
             </template>
 
-            <!-- Loading Indicator saat AI Berpikir/Menjawab -->
+            <!-- Loading Indicator saat AI Berpikir -->
             <div wire:loading wire:target="sendMessage" class="flex items-start gap-2 pt-2">
                 <div
                     class="bg-white border border-slate-200 rounded-2xl rounded-bl-none px-4 py-3 text-sm text-slate-500 shadow-sm flex items-center gap-2">
@@ -279,25 +323,39 @@
         </div>
     </div>
 
-    <!-- 3. Form Input Chat (Dukungan Drag & Drop, Paste Clipboard, dan Keyboard Shortcut Enter) -->
-    <div class="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-200">
+    <!-- 3. Form Input Chat -->
+    <div class="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-200 relative">
+
+        <!-- Loading Uploading Indicator (Bisa Dipicu oleh Drag & Drop, Paste, atau Tombol Lampiran) -->
+        <div x-show="isPasting" x-cloak wire:loading.remove wire:target="files"
+            class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-xl text-xs font-medium w-fit mb-2 animate-pulse">
+            <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                    stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <span>Membaca clipboard / file...</span>
+        </div>
+
+        <div wire:loading wire:target="files"
+            class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-xl text-xs font-medium w-fit mb-2 animate-pulse">
+            <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                    stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <span>Mengunggah & memproses file...</span>
+        </div>
+
         <form @submit.prevent="submitChat()" class="max-w-5xl mx-auto space-y-2">
 
-            <!-- Loading Indicator Saat File Sedang Di-upload -->
-            <div wire:loading wire:target="files"
-                class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-xl text-xs font-medium w-fit animate-pulse">
-                <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                        stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                </svg>
-                <span>Mengunggah & memproses file...</span>
-            </div>
-
-            <!-- Preview Antrean File yang Selesai Di-upload -->
+            <!-- Preview Lampiran File -->
             @if (!empty($files))
                 <div x-show="!hidePreview" x-ref="previewContainer" wire:loading.remove wire:target="files"
                     class="flex flex-wrap items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 w-fit">
@@ -328,20 +386,9 @@
                 </div>
             @endif
 
-            <!-- Bar Input Utama (Dengan Event Drag-and-Drop & Paste) -->
-            <div @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false"
-                @drop.prevent="handleDrop($event)"
-                :class="{ 'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-50/40': isDragging }"
+            <!-- Input Bar Utama -->
+            <div
                 class="relative flex items-end gap-2 bg-slate-50 hover:bg-slate-100/80 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 border border-slate-200 rounded-2xl p-2 transition-all shadow-sm">
-
-                <!-- Visual Overlay saat File di-Drag di Atas Field -->
-                <div x-show="isDragging" x-cloak
-                    class="absolute inset-0 bg-indigo-500/10 rounded-2xl flex items-center justify-center pointer-events-none z-10 backdrop-blur-[1px]">
-                    <span
-                        class="text-xs font-semibold text-indigo-600 bg-white px-3 py-1.5 rounded-lg shadow-sm border border-indigo-100">
-                        Drop file/gambar di sini
-                    </span>
-                </div>
 
                 <!-- Button Upload File -->
                 <label wire:loading.class="opacity-50 pointer-events-none" wire:target="files"
@@ -355,7 +402,7 @@
                     </svg>
                 </label>
 
-                <!-- Textarea Autosize (Mendukung Paste & Shortcuts Keyboard) -->
+                <!-- Textarea (Satu-satunya Titik Tangkap Paste) -->
                 <textarea x-ref="chatTextarea" x-model="inputMsg" @input="adjustHeight($el)" @paste="handlePaste($event)"
                     @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); submitChat(); }" rows="1"
                     placeholder="Ketik pertanyaan atau unggah/paste file untuk {{ $currentSubject->name ?? 'pelajaran' }}..."
