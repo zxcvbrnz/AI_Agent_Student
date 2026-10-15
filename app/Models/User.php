@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'google_id',
         'membership_type',
         'membership_expires_at',
     ];
