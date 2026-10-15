@@ -4,9 +4,6 @@ use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
 
 new class extends Component {
-    /**
-     * Log the current user out of the application.
-     */
     public function logout(Logout $logout): void
     {
         $logout();
@@ -23,37 +20,46 @@ new class extends Component {
         x-transition:leave-end="opacity-0" @click="mobileOpen = false" class="fixed inset-0 z-40 bg-gray-900/50 lg:hidden"
         style="display: none;"></div>
 
-    <!-- Full Height Sidebar Navigation -->
+    <!-- Collapsible Sidebar (Desktop menyisakan ruang w-16 saat tertutup) -->
     <aside
         :class="{
-            'translate-x-0': mobileOpen,
-            '-translate-x-full': !mobileOpen,
-            'lg:translate-x-0': sidebarOpen,
-            'lg:-translate-x-full': !sidebarOpen
+            'translate-x-0 w-64': mobileOpen || sidebarOpen,
+            '-translate-x-full lg:translate-x-0 lg:w-16': !sidebarOpen && !mobileOpen
         }"
-        class="fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out">
+        class="fixed top-0 bottom-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out overflow-hidden shadow-sm">
 
-        <!-- Header Sidebar: Logo & Close Buttons -->
+        <!-- Header Sidebar: Logo & Close/Open Buttons -->
         <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 shrink-0">
-            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
-                <x-application-logo class="block h-8 w-auto fill-current text-indigo-600" />
-                <span class="font-bold text-lg text-gray-800 tracking-wide">
+            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 overflow-hidden">
+                <x-application-logo class="block h-8 w-auto fill-current text-indigo-600 shrink-0" />
+                <span
+                    class="font-bold text-lg text-gray-800 tracking-wide whitespace-nowrap transition-opacity duration-300"
+                    :class="{ 'lg:opacity-0 lg:pointer-events-none': !sidebarOpen, 'lg:opacity-100': sidebarOpen }">
                     {{ config('app.name', 'Laravel') }}
                 </span>
             </a>
 
-            <!-- Toggle Close (Desktop) -->
-            <button @click="sidebarOpen = false"
-                class="hidden lg:inline-flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition">
+            <!-- Toggle Close (Desktop - Muncul saat sidebar terbuka) -->
+            <button @click="sidebarOpen = false" x-show="sidebarOpen"
+                class="hidden lg:inline-flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                 </svg>
             </button>
 
+            <!-- Toggle Open (Desktop - Muncul saat sidebar tertutup/collapse menjadi w-16) -->
+            <button @click="sidebarOpen = true" x-show="!sidebarOpen"
+                class="hidden lg:inline-flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition mx-auto shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+            </button>
+
             <!-- Toggle Close (Mobile) -->
             <button @click="mobileOpen = false"
-                class="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition">
+                class="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -61,21 +67,23 @@ new class extends Component {
         </div>
 
         <!-- Menu Navigation Links -->
-        <nav class="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
+        <nav class="flex-1 px-3 py-4 space-y-6 overflow-y-auto overflow-x-hidden">
 
             <!-- SECTION 1: MAIN MENU -->
             <div class="space-y-1">
-                <div class="px-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                <div class="px-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider transition-opacity duration-300"
+                    :class="{ 'lg:hidden': !sidebarOpen }">
                     Main Menu
                 </div>
 
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="rounded-md">
                     <div class="flex items-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
-                        <span>{{ __('AI Chat') }}</span>
+                        <span class="whitespace-nowrap transition-opacity duration-300"
+                            :class="{ 'lg:hidden': !sidebarOpen }">{{ __('AI Chat') }}</span>
                     </div>
                 </x-responsive-nav-link>
             </div>
@@ -83,8 +91,8 @@ new class extends Component {
             <!-- SECTION 2: ADMIN MENU -->
             @if (auth()->user()->role === 'admin')
                 <div class="space-y-1">
-                    <div
-                        class="px-3 text-[11px] font-semibold text-indigo-600 uppercase tracking-wider flex items-center justify-between">
+                    <div class="px-3 text-[11px] font-semibold text-indigo-600 uppercase tracking-wider flex items-center justify-between transition-opacity duration-300"
+                        :class="{ 'lg:hidden': !sidebarOpen }">
                         <span>Admin Panel</span>
                         <span
                             class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
@@ -92,31 +100,34 @@ new class extends Component {
 
                     <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users.*')" wire:navigate class="rounded-md">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
-                            <span>{{ __('Kelola Pengguna') }}</span>
+                            <span class="whitespace-nowrap transition-opacity duration-300"
+                                :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Kelola Pengguna') }}</span>
                         </div>
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts.*')" wire:navigate class="rounded-md">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <span>{{ __('Kelola Core Prompts') }}</span>
+                            <span class="whitespace-nowrap transition-opacity duration-300"
+                                :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Kelola Core Prompts') }}</span>
                         </div>
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects.*')" wire:navigate class="rounded-md">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
-                            <span>{{ __('Kelola Subject') }}</span>
+                            <span class="whitespace-nowrap transition-opacity duration-300"
+                                :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Kelola Subject') }}</span>
                         </div>
                     </x-responsive-nav-link>
                 </div>
@@ -135,7 +146,8 @@ new class extends Component {
                                 class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs uppercase shrink-0">
                                 {{ substr(auth()->user()->name, 0, 2) }}
                             </div>
-                            <div class="truncate">
+                            <div class="truncate transition-opacity duration-300"
+                                :class="{ 'lg:hidden': !sidebarOpen }">
                                 <div class="font-semibold text-xs text-gray-800 truncate" x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
                                     x-text="name" x-on:profile-updated.window="name = $event.detail.name">
                                     {{ auth()->user()->name }}
@@ -145,7 +157,8 @@ new class extends Component {
                                 </div>
                             </div>
                         </div>
-                        <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor"
+                        <svg class="w-4 h-4 text-gray-400 shrink-0 transition-opacity duration-300"
+                            :class="{ 'lg:hidden': !sidebarOpen }" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
