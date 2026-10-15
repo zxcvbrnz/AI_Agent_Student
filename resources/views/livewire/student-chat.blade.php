@@ -275,7 +275,7 @@
                             </div>
                         </div>
                         <span class="text-[10px] text-slate-400 mt-1 px-1">
-                            {{ $chat['role'] === 'user' ? 'Anda' : $currentSubject->name ?? 'AI Tutor' }}
+                            AI {{ $chat['role'] === 'user' ? 'Anda' : $currentSubject->name ?? 'AI Tutor' }}
                         </span>
                     </div>
                 @endforeach
