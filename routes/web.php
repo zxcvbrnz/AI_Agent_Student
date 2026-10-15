@@ -5,6 +5,10 @@ use App\Livewire\StudentChat;
 use App\Livewire\Admin\UserManagement;
 use App\Livewire\ManageCorePrompts;
 use App\Livewire\SubjectManager;
+use App\Http\Controllers\Auth\GoogleController;
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::view('/', 'welcome');
 

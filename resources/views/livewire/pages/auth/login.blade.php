@@ -89,6 +89,12 @@ new #[Layout('layouts.guest')] class extends Component {
                     {{ __('Daftar akun baru') }}
                 </a>
             </p>
+            <div class="mt-4 flex items-center justify-center">
+                <a href="{{ route('google.login') }}"
+                    class="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none">
+                    <span class="ml-2">Login dengan Google</span>
+                </a>
+            </div>
         </div>
     </form>
 </div>
