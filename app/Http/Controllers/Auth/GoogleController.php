@@ -40,7 +40,7 @@ class GoogleController extends Controller
 
             Auth::login($user);
 
-            return redirect()->intended('/dashboard');
+            return redirect()->intended(route('dashboard'));
         } catch (\Exception $e) {
             return redirect('/login')->with('error', 'Gagal login menggunakan Google.');
         }
