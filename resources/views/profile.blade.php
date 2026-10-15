@@ -18,7 +18,7 @@
         </div>
     </x-slot>
 
-    <div class="space-y-6">
+    <div class="space-y-6 p-6">
         <!-- Section 1: Informasi Profil -->
         <div
             class="p-6 sm:p-8 bg-white shadow-sm border border-gray-200/80 rounded-xl transition duration-150 hover:shadow-md">
