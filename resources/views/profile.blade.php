@@ -28,14 +28,14 @@
         </div>
 
         <!-- Section 2: Keamanan Kata Sandi -->
-        @if (!auth()->user()->google_id)
-            <div
-                class="p-6 sm:p-8 bg-white shadow-sm border border-gray-200/80 rounded-xl transition duration-150 hover:shadow-md">
-                <div class="max-w-xl">
-                    <livewire:profile.update-password-form />
-                </div>
+        {{-- @if (!auth()->user()->google_id) --}}
+        <div
+            class="p-6 sm:p-8 bg-white shadow-sm border border-gray-200/80 rounded-xl transition duration-150 hover:shadow-md">
+            <div class="max-w-xl">
+                <livewire:profile.update-password-form />
             </div>
-        @endif
+        </div>
+        {{-- @endif --}}
 
         {{-- <!-- Section 3: Hapus Akun (Zona Bahaya) -->
         <div
