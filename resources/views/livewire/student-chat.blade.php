@@ -117,7 +117,7 @@
         document.body.style.overflow = '';
     }
 }" @dragenter="handleDragEnter($event)" @dragleave="handleDragLeave($event)" @dragover.prevent
-    @drop="handleDrop($event)" class="relative w-full h-screen flex flex-col min-h-0 bg-transparent overflow-hidden">
+    @drop="handleDrop($event)" class="relative w-full h-[100dvh] flex flex-col min-h-0 bg-transparent overflow-hidden">
 
     <!-- Overlay Drop Zone Luas (Mencakup Seluruh Area Chat) -->
     <div x-show="isDragging" x-cloak x-transition:enter="transition ease-out duration-200"
@@ -143,7 +143,7 @@
     @endphp
 
     <!-- 1. Header Utama Page -->
-    <div class="shrink-0 bg-transparent border-b border-slate-200 px-4 py-3 space-y-3">
+    <div class="shrink-0 bg-transparent border-b border-slate-200 px-4 py-2 space-y-2">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
@@ -167,7 +167,7 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider shrink-0 mr-1">Mapel:</span>
             @foreach ($subjects as $subject)
                 <button wire:click="selectSubject({{ $subject->id }})"
@@ -357,7 +357,7 @@
             <!-- Preview Lampiran File -->
             @if (!empty($files))
                 <div x-show="!hidePreview" x-ref="previewContainer" wire:loading.remove wire:target="files"
-                    class="flex flex-wrap items-center gap-2 bg-slate-50/80 backdrop-blur-sm p-2 rounded-xl border border-slate-200 w-fit">
+                    class="flex flex-wrap items-center gap-2 bg-slate-50/85 backdrop-blur-sm p-2 rounded-xl border border-slate-200 w-fit">
                     @foreach ($files as $index => $file)
                         <div
                             class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 relative group shadow-sm">
@@ -387,7 +387,7 @@
 
             <!-- Input Bar Utama -->
             <div
-                class="relative flex items-end gap-2 bg-white/90 backdrop-blur-sm hover:bg-white focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 border border-slate-200 rounded-2xl p-2 transition-all shadow-sm">
+                class="relative flex items-end gap-2 bg-white/95 backdrop-blur-sm hover:bg-white focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 border border-slate-200 rounded-2xl p-2 transition-all shadow-sm">
 
                 <!-- Button Upload File -->
                 <label wire:loading.class="opacity-50 pointer-events-none" wire:target="files"
