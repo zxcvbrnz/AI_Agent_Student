@@ -117,8 +117,7 @@
         document.body.style.overflow = '';
     }
 }" @dragenter="handleDragEnter($event)" @dragleave="handleDragLeave($event)" @dragover.prevent
-    @drop="handleDrop($event)"
-    class="relative w-full h-[calc(100vh-6rem)] sm:h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)] flex flex-col min-h-0 bg-white overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+    @drop="handleDrop($event)" class="relative w-full h-screen flex flex-col min-h-0 bg-transparent overflow-hidden">
 
     <!-- Overlay Drop Zone Luas (Mencakup Seluruh Area Chat) -->
     <div x-show="isDragging" x-cloak x-transition:enter="transition ease-out duration-200"
@@ -144,7 +143,7 @@
     @endphp
 
     <!-- 1. Header Utama Page -->
-    <div class="shrink-0 bg-white border-b border-slate-200 px-4 py-3 space-y-3">
+    <div class="shrink-0 bg-transparent border-b border-slate-200 px-4 py-3 space-y-3">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
@@ -181,7 +180,7 @@
     </div>
 
     <!-- 2. Area Riwayat Chat -->
-    <div x-ref="chatContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto bg-slate-50/50 overscroll-contain min-h-0">
+    <div x-ref="chatContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto bg-transparent overscroll-contain min-h-0">
         <div class="max-w-5xl mx-auto space-y-4">
 
             @if (empty($chatHistory))
@@ -324,7 +323,7 @@
     </div>
 
     <!-- 3. Form Input Chat -->
-    <div class="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-200 relative">
+    <div class="shrink-0 p-3 sm:p-4 bg-transparent border-t border-slate-200 relative">
 
         <!-- Loading Uploading Indicator (Bisa Dipicu oleh Drag & Drop, Paste, atau Tombol Lampiran) -->
         <div x-show="isPasting" x-cloak wire:loading.remove wire:target="files"
@@ -358,7 +357,7 @@
             <!-- Preview Lampiran File -->
             @if (!empty($files))
                 <div x-show="!hidePreview" x-ref="previewContainer" wire:loading.remove wire:target="files"
-                    class="flex flex-wrap items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 w-fit">
+                    class="flex flex-wrap items-center gap-2 bg-slate-50/80 backdrop-blur-sm p-2 rounded-xl border border-slate-200 w-fit">
                     @foreach ($files as $index => $file)
                         <div
                             class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-slate-200 relative group shadow-sm">
@@ -388,7 +387,7 @@
 
             <!-- Input Bar Utama -->
             <div
-                class="relative flex items-end gap-2 bg-slate-50 hover:bg-slate-100/80 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 border border-slate-200 rounded-2xl p-2 transition-all shadow-sm">
+                class="relative flex items-end gap-2 bg-white/90 backdrop-blur-sm hover:bg-white focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 border border-slate-200 rounded-2xl p-2 transition-all shadow-sm">
 
                 <!-- Button Upload File -->
                 <label wire:loading.class="opacity-50 pointer-events-none" wire:target="files"
