@@ -57,7 +57,7 @@
         <livewire:layout.navigation />
 
         <!-- Main Content Area (Dynamic Margin Padding) -->
-        <div :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'"
+        <div :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-20'"
             class="pt-16 lg:pt-0 flex flex-col flex-1 transition-all duration-300 ease-in-out">
 
             <!-- Page Header (Optional) -->
