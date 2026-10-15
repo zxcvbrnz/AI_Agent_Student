@@ -185,7 +185,7 @@
 
             @if (empty($chatHistory))
                 <div x-show="!optimisticText && optimisticFiles.length === 0"
-                    class="py-12 flex flex-col items-end justify-center text-center text-slate-400 my-auto">
+                    class="py-12 flex flex-col items-center justify-end text-center text-slate-400 my-auto">
                     <span class="text-6xl mb-3">💬</span>
                     <p class="text-base font-semibold text-slate-700">Halo {{ auth()->user()->name }}!</p>
                     <p class="text-xs sm:text-sm text-slate-400 max-w-md mt-1">
