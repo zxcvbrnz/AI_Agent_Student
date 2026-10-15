@@ -20,21 +20,21 @@ new class extends Component {
         x-transition:leave-end="opacity-0" @click="mobileOpen = false" class="fixed inset-0 z-40 bg-gray-900/50 lg:hidden"
         style="display: none;"></div>
 
-    <!-- Collapsible Sidebar (Desktop menyisakan ruang w-16 saat tertutup) -->
+    <!-- Collapsible Sidebar -->
     <aside
         :class="{
             'translate-x-0 w-64': mobileOpen || sidebarOpen,
-            '-translate-x-full lg:translate-x-0 lg:w-16': !sidebarOpen && !mobileOpen
+            '-translate-x-full lg:translate-x-0 lg:w-20': !sidebarOpen && !mobileOpen
         }"
-        class="fixed top-0 bottom-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out overflow-hidden shadow-sm">
+        class="fixed top-0 bottom-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out shadow-sm">
 
         <!-- Header Sidebar: Logo & Close/Open Buttons -->
-        <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 shrink-0">
-            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 overflow-hidden">
+        <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 shrink-0 overflow-hidden">
+            <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
                 <x-application-logo class="block h-8 w-auto fill-current text-indigo-600 shrink-0" />
                 <span
                     class="font-bold text-lg text-gray-800 tracking-wide whitespace-nowrap transition-opacity duration-300"
-                    :class="{ 'lg:opacity-0 lg:pointer-events-none': !sidebarOpen, 'lg:opacity-100': sidebarOpen }">
+                    :class="{ 'lg:opacity-0 lg:pointer-events-none lg:hidden': !sidebarOpen, 'lg:opacity-100': sidebarOpen }">
                     {{ config('app.name', 'Laravel') }}
                 </span>
             </a>
@@ -48,7 +48,7 @@ new class extends Component {
                 </svg>
             </button>
 
-            <!-- Toggle Open (Desktop - Muncul saat sidebar tertutup/collapse menjadi w-16) -->
+            <!-- Toggle Open (Desktop - Muncul saat sidebar tertutup) -->
             <button @click="sidebarOpen = true" x-show="!sidebarOpen"
                 class="hidden lg:inline-flex p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition mx-auto shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,9 +76,11 @@ new class extends Component {
                     Main Menu
                 </div>
 
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="rounded-md">
-                    <div class="flex items-center gap-3">
-                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate
+                    class="rounded-md flex items-center">
+                    <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            title="AI Chat">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
@@ -98,9 +100,11 @@ new class extends Component {
                             class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
                     </div>
 
-                    <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users.*')" wire:navigate class="rounded-md">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users.*')" wire:navigate
+                        class="rounded-md flex items-center">
+                        <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                title="Kelola Pengguna">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
@@ -109,9 +113,11 @@ new class extends Component {
                         </div>
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts.*')" wire:navigate class="rounded-md">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts.*')" wire:navigate
+                        class="rounded-md flex items-center">
+                        <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                title="Kelola Core Prompts">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
@@ -120,9 +126,11 @@ new class extends Component {
                         </div>
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects.*')" wire:navigate class="rounded-md">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects.*')" wire:navigate
+                        class="rounded-md flex items-center">
+                        <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                title="Kelola Subject">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
@@ -135,66 +143,42 @@ new class extends Component {
 
         </nav>
 
-        <!-- Footer Sidebar: User Profile & Log Out Dropdown -->
-        <div class="p-3 border-t border-gray-200 bg-gray-50/50 shrink-0">
-            <x-dropdown align="top" width="48">
-                <x-slot name="trigger">
-                    <button
-                        class="w-full flex items-center justify-between p-2 rounded-lg text-left hover:bg-gray-100 transition focus:outline-none">
-                        <div class="flex items-center gap-3 overflow-hidden">
-                            <div
-                                class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs uppercase shrink-0">
-                                {{ substr(auth()->user()->name, 0, 2) }}
-                            </div>
-                            <div class="truncate transition-opacity duration-300"
-                                :class="{ 'lg:hidden': !sidebarOpen }">
-                                <div class="font-semibold text-xs text-gray-800 truncate" x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
-                                    x-text="name" x-on:profile-updated.window="name = $event.detail.name">
-                                    {{ auth()->user()->name }}
-                                </div>
-                                <div class="text-[11px] text-gray-500 truncate">
-                                    {{ auth()->user()->email }}
-                                </div>
-                            </div>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-400 shrink-0 transition-opacity duration-300"
-                            :class="{ 'lg:hidden': !sidebarOpen }" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                        </svg>
-                    </button>
-                </x-slot>
-
-                <x-slot name="content">
-                    <div class="px-4 py-2 border-b border-gray-100">
-                        <span
-                            class="text-[10px] uppercase font-bold px-2 py-0.5 rounded {{ auth()->user()->role === 'admin' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-700' }}">
-                            Role: {{ auth()->user()->role ?? 'User' }}
-                        </span>
+        <!-- Footer Sidebar: User Profile & Log Out Langsung (Tanpa Dropdown) -->
+        <div class="p-3 border-t border-gray-200 bg-gray-50/50 shrink-0 space-y-2">
+            <!-- Info User / Tombol Profile -->
+            <a href="{{ route('profile') }}" wire:navigate
+                class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition text-left overflow-hidden"
+                :class="{ 'justify-center': !sidebarOpen }" title="Profile">
+                <div
+                    class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs uppercase shrink-0">
+                    {{ substr(auth()->user()->name, 0, 2) }}
+                </div>
+                <div class="truncate transition-opacity duration-300" :class="{ 'lg:hidden': !sidebarOpen }">
+                    <div class="font-semibold text-xs text-gray-800 truncate" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
+                        x-on:profile-updated.window="name = $event.detail.name">
+                        {{ auth()->user()->name }}
                     </div>
+                    <div class="text-[11px] text-gray-500 truncate">
+                        {{ auth()->user()->email }}
+                    </div>
+                </div>
+            </a>
 
-                    <x-dropdown-link :href="route('profile')" wire:navigate class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span>{{ __('Profile') }}</span>
-                    </x-dropdown-link>
-
-                    <button wire:click="logout" class="w-full text-start">
-                        <x-dropdown-link
-                            class="text-red-600 hover:text-red-700 hover:bg-red-50 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span>{{ __('Log Out') }}</span>
-                        </x-dropdown-link>
-                    </button>
-                </x-slot>
-            </x-dropdown>
+            <!-- Tombol Log Out Langsung -->
+            <button wire:click="logout"
+                class="w-full flex items-center gap-3 p-2 rounded-lg text-red-600 hover:bg-red-50 transition text-left overflow-hidden"
+                :class="{ 'justify-center': !sidebarOpen }" title="Log Out">
+                <div class="w-9 h-9 rounded-lg bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </div>
+                <span class="text-xs font-medium whitespace-nowrap transition-opacity duration-300"
+                    :class="{ 'lg:hidden': !sidebarOpen }">
+                    {{ __('Log Out') }}
+                </span>
+            </button>
         </div>
     </aside>
 </div>
