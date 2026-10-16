@@ -4,13 +4,6 @@ use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
 
 new class extends Component {
-    public $level;
-
-    public function mount($level = null)
-    {
-        $this->level = $level;
-    }
-
     public function logout(Logout $logout): void
     {
         $logout();
@@ -20,6 +13,10 @@ new class extends Component {
 }; ?>
 
 <div>
+    @php
+        // Mengambil slug level langsung dari URL yang sedang aktif
+        $currentLevel = request()->route('level');
+    @endphp
     <!-- Mobile Overlay Backdrop -->
     <div x-show="mobileOpen" x-transition:enter="transition-opacity ease-linear duration-200"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -83,8 +80,9 @@ new class extends Component {
                     Main Menu
                 </div>
 
-                <x-responsive-nav-link :href="route('level.chat', ['level' => $level])" :active="request()->routeIs('level.chat')" wire:navigate
-                    class="rounded-md flex items-center">
+                <x-responsive-nav-link
+                    href="{{ $currentLevel ? route('level.dashboard', ['level' => $currentLevel]) : route('dashboard') }}"
+                    :active="request()->routeIs('level.chat')" wire:navigate class="rounded-md flex items-center">
                     <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             title="AI Chat">
