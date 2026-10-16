@@ -17,6 +17,7 @@ new class extends Component {
         // Mengambil slug level langsung dari URL yang sedang aktif
         $currentLevel = request()->route('level');
     @endphp
+
     <!-- Mobile Overlay Backdrop -->
     <div x-show="mobileOpen" x-transition:enter="transition-opacity ease-linear duration-200"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -27,10 +28,14 @@ new class extends Component {
     <!-- Collapsible Sidebar -->
     <aside
         :class="{
-            'translate-x-0 w-64': mobileOpen || sidebarOpen,
-            '-translate-x-full lg:translate-x-0 lg:w-20': !sidebarOpen && !mobileOpen
+            'translate-x-0 w-64': mobileOpen || (window.innerWidth >= 1024 && sidebarOpen),
+            '-translate-x-full': !mobileOpen && (window.innerWidth < 1024 || !sidebarOpen),
+            'lg:w-20': !sidebarOpen && window.innerWidth >= 1024,
+            'lg:w-64': sidebarOpen && window.innerWidth >= 1024
         }"
-        class="fixed top-0 bottom-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out shadow-sm">
+        class="fixed top-0 bottom-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out shadow-sm"
+        :style="window.innerWidth < 1024 ? (mobileOpen ? 'transform: translateX(0px); width: 16rem;' :
+            'transform: translateX(-100%);') : ''">
 
         <!-- Header Sidebar: Logo & Close/Open Buttons -->
         <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 shrink-0 overflow-hidden">
@@ -93,6 +98,20 @@ new class extends Component {
                             :class="{ 'lg:hidden': !sidebarOpen }">{{ __('AI Chat') }}</span>
                     </div>
                 </x-responsive-nav-link>
+
+                <!-- TOMBOL GANTI LEVEL -->
+                <x-responsive-nav-link href="{{ route('level.selection') ?? '#' }}" wire:navigate
+                    class="rounded-md flex items-center text-indigo-600 hover:text-indigo-700">
+                    <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            title="Ganti Level">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        <span class="whitespace-nowrap transition-opacity duration-300 font-medium"
+                            :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Ganti Level') }}</span>
+                    </div>
+                </x-responsive-nav-link>
             </div>
 
             <!-- SECTION 2: ADMIN MENU -->
@@ -148,7 +167,7 @@ new class extends Component {
 
         </nav>
 
-        <!-- Footer Sidebar: User Profile & Log Out Langsung (Tanpa Dropdown) -->
+        <!-- Footer Sidebar: User Profile & Log Out Langsung -->
         <div class="p-3 border-t border-gray-200 bg-gray-50/50 shrink-0 space-y-2">
             <!-- Info User / Tombol Profile -->
             <a href="{{ route('profile') }}" wire:navigate
