@@ -140,9 +140,9 @@
     <!-- 1. Header Utama Page -->
     <div class="flex-none bg-transparent border-b border-slate-200 px-4 py-2 space-y-2 z-10">
         <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
-                <div class="ps-10 lg:ps-0">
+            <div class="flex items-center">
+                <div class="ps-10 lg:ps-0 gap-3 flex items-center">
+                    <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
                     <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">
                         AI Agent {{ $levelName }} : {{ $currentSubject->name ?? 'Tutor' }}
                     </h1>
