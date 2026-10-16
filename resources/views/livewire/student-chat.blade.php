@@ -117,8 +117,7 @@
         document.body.style.overflow = '';
     }
 }" @dragenter="handleDragEnter($event)" @dragleave="handleDragLeave($event)" @dragover.prevent
-    @drop="handleDrop($event)"
-    class="relative w-full h-[95dvh] lg:h-[100dvh] flex flex-col min-h-0 bg-transparent overflow-hidden">
+    @drop="handleDrop($event)" class="relative w-full h-[100dvh] flex flex-col overflow-hidden bg-transparent">
 
     <!-- Overlay Drop Zone Luas (Mencakup Seluruh Area Chat) -->
     <div x-show="isDragging" x-cloak x-transition:enter="transition ease-out duration-200"
@@ -137,8 +136,9 @@
             <p class="text-xs text-slate-500">File akan otomatis ditambahkan ke pesan Anda</p>
         </div>
     </div>
+
     <!-- 1. Header Utama Page -->
-    <div class="shrink-0 bg-transparent border-b border-slate-200 px-4 py-2 space-y-2">
+    <div class="flex-none bg-transparent border-b border-slate-200 px-4 py-2 space-y-2 z-10">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
@@ -175,8 +175,8 @@
         </div>
     </div>
 
-    <!-- 2. Area Riwayat Chat -->
-    <div x-ref="chatContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto bg-transparent overscroll-contain min-h-0">
+    <!-- 2. Area Riwayat Chat (Scrollable & Fleksibel) -->
+    <div x-ref="chatContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-transparent min-h-0">
         <div class="max-w-5xl mx-auto space-y-4">
 
             @if (empty($chatHistory))
@@ -318,10 +318,10 @@
         </div>
     </div>
 
-    <!-- 3. Form Input Chat -->
-    <div class="shrink-0 p-3 sm:p-4 bg-transparent border-t border-slate-200 relative">
+    <!-- 3. Form Input Chat (Selalu Menempel di Bagian Bawah) -->
+    <div class="flex-none p-3 sm:p-4 bg-transparent border-t border-slate-200 relative z-10">
 
-        <!-- Loading Uploading Indicator (Bisa Dipicu oleh Drag & Drop, Paste, atau Tombol Lampiran) -->
+        <!-- Loading Uploading Indicator -->
         <div x-show="isPasting" x-cloak wire:loading.remove wire:target="files"
             class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-xl text-xs font-medium w-fit mb-2 animate-pulse">
             <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -397,7 +397,7 @@
                     </svg>
                 </label>
 
-                <!-- Textarea (Satu-satunya Titik Tangkap Paste) -->
+                <!-- Textarea -->
                 <textarea x-ref="chatTextarea" x-model="inputMsg" @input="adjustHeight($el)" @paste="handlePaste($event)"
                     @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); submitChat(); }" rows="1"
                     placeholder="Ketik pertanyaan atau unggah/paste file untuk {{ $currentSubject->name ?? 'pelajaran' }}..."
