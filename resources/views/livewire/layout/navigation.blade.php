@@ -124,6 +124,7 @@ new class extends Component {
                             class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
                     </div>
 
+                    <!-- Kelola Pengguna -->
                     <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
@@ -137,6 +138,21 @@ new class extends Component {
                         </div>
                     </x-responsive-nav-link>
 
+                    <!-- Kelola Level -->
+                    <x-responsive-nav-link :href="route('admin.levels')" :active="request()->routeIs('admin.levels')" wire:navigate
+                        class="rounded-md flex items-center">
+                        <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                title="Kelola Level">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <span class="whitespace-nowrap transition-opacity duration-300"
+                                :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Kelola Level') }}</span>
+                        </div>
+                    </x-responsive-nav-link>
+
+                    <!-- Kelola Core Prompts -->
                     <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
@@ -150,13 +166,14 @@ new class extends Component {
                         </div>
                     </x-responsive-nav-link>
 
+                    <!-- Kelola Subject -->
                     <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 title="Kelola Subject">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                             </svg>
                             <span class="whitespace-nowrap transition-opacity duration-300"
                                 :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Kelola Subject') }}</span>
