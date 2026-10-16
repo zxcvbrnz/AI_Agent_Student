@@ -12,6 +12,7 @@ class Level extends Model
         'slug',
         'prompt',
         'price',
+        'color',
     ];
 
     public function users(): BelongsToMany

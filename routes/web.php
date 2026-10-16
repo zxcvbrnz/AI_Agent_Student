@@ -7,6 +7,7 @@ use App\Livewire\Admin\UserManagement;
 use App\Livewire\ManageCorePrompts;
 use App\Livewire\SubjectManager;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Livewire\Admin\LevelManagement;
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
@@ -44,7 +45,8 @@ Route::middleware(['auth'])->get('/membership-expired', function () {
 
 // Route Khusus Admin
 Route::middleware(['auth', 'is.admin'])->prefix('admin')->group(function () {
-    Route::get('/users', UserManagement::class)->name('admin.users');
+    Route::get('/manage-users', UserManagement::class)->name('admin.users');
+    Route::get('/manage-levels', LevelManagement::class)->name('admin.level');
     Route::get('/core-prompts', ManageCorePrompts::class)->name('admin.core-prompts');
     Route::get('/subjects', SubjectManager::class)->name('admin.subjects');
 });
