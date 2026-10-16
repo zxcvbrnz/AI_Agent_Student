@@ -59,7 +59,7 @@
         @endif
 
         <!-- Main Content Area (Dynamic Margin Padding) -->
-        <div :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-20'"
+        <div @if (!request()->routeIs('dashboard')) :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-20'" @endif
             class="pt-16 lg:pt-0 flex flex-col flex-1 transition-all duration-300 ease-in-out">
 
             <!-- Page Header (Optional) -->
