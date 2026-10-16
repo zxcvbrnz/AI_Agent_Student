@@ -77,7 +77,7 @@
                             </a>
                         @else
                             {{-- Jika belum punya akses / expired, arahkan ke halaman beli langganan --}}
-                            <a href="{{ route('subscription.checkout', ['level' => $level->slug]) }}"
+                            <a href=""
                                 class="inline-flex items-center justify-center bg-emerald-600 text-white font-medium px-5 py-2.5 rounded-xl hover:bg-emerald-700 shadow-sm shadow-emerald-100 transition">
                                 Beli Langganan
                                 <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
