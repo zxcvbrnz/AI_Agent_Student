@@ -22,6 +22,7 @@ class StudentChat extends Component
     public $chatHistory = [];
 
     public $level;
+    public $levelName = '';
     public $membershipType = '-';
     public $expiresAt = null;
 
@@ -33,6 +34,7 @@ class StudentChat extends Component
         if ($level) {
             // Cari data level berdasarkan slug di URL
             $levelData = Level::where('slug', $level)->first();
+            $this->levelName = $levelData ? $levelData->name : '';
 
             if ($levelData) {
                 // Ambil data user yang sedang login beserta relasi pivot-nya
