@@ -139,7 +139,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Level -->
-                    <x-responsive-nav-link :href="route('admin.levels')" :active="request()->routeIs('admin.levels')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.level')" :active="request()->routeIs('admin.level')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
