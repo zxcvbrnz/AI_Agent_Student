@@ -101,7 +101,7 @@ new class extends Component {
 
                 <!-- TOMBOL GANTI LEVEL -->
                 <x-responsive-nav-link href="{{ route('dashboard') }}" wire:navigate
-                    class="rounded-md flex items-center text-indigo-600 hover:text-indigo-700">
+                    class="rounded-md flex items-center text-teal-600 hover:text-teal-700">
                     <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             title="Ganti Level">
@@ -124,7 +124,7 @@ new class extends Component {
                             class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
                     </div>
 
-                    <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users.*')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -137,7 +137,7 @@ new class extends Component {
                         </div>
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts.*')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -150,7 +150,7 @@ new class extends Component {
                         </div>
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects.*')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
