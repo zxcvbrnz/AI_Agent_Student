@@ -144,7 +144,7 @@
                 <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
                 <div>
                     <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">
-                        AI Agent Level : {{ $levelName }}
+                        AI Agent Tingkat : {{ $levelName }}
                     </h1>
                     <p class="text-xs text-slate-500 hidden sm:block">Siap menjawab pertanyaan, soal, & menganalisa
                         gambar.</p>
