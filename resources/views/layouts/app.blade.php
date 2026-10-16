@@ -54,7 +54,9 @@
         </div>
 
         <!-- Livewire Sidebar Component -->
-        <livewire:layout.navigation />
+        @if (!route('dashboard'))
+            <livewire:layout.navigation />
+        @endif
 
         <!-- Main Content Area (Dynamic Margin Padding) -->
         <div :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-20'"
