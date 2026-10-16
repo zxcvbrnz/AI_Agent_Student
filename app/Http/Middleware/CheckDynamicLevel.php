@@ -35,8 +35,8 @@ class CheckDynamicLevel
         $hasAccess = $user->levels()
             ->where('levels.id', $levelData->id)
             ->where(function ($query) {
-                $query->whereNull('membership_expired_at')
-                    ->orWhere('membership_expired_at', '>', now());
+                $query->whereNull('membership_expires_at')
+                    ->orWhere('membership_expires_at', '>', now());
             })
             ->exists();
 
