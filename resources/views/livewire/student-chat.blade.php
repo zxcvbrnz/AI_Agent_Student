@@ -136,12 +136,6 @@
             <p class="text-xs text-slate-500">File akan otomatis ditambahkan ke pesan Anda</p>
         </div>
     </div>
-
-    @php
-        $user = auth()->user();
-        $expiresAt = $user->membership_expires_at;
-    @endphp
-
     <!-- 1. Header Utama Page -->
     <div class="shrink-0 bg-transparent border-b border-slate-200 px-4 py-2 space-y-2">
         <div class="flex items-center justify-between gap-3">
@@ -163,7 +157,7 @@
                             class="text-indigo-600 uppercase">{{ $membershipType }}</strong></span>
                     <span class="text-slate-300">|</span>
                     <span class="text-slate-500">Aktif:
-                        {{ $expiresAt }}</span>
+                        {{ $expiresAt ? $expiresAt->diffForHumans() : 'Selamanya / Tidak Aktif' }}</span>
                 </div>
             </div>
         </div>
