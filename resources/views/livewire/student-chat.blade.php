@@ -118,7 +118,7 @@
     }
 }" @dragenter="handleDragEnter($event)" @dragleave="handleDragLeave($event)" @dragover.prevent
     @drop="handleDrop($event)"
-    class="relative w-full h-[100dvh-4rem] lg:h-[100dvh] flex flex-col min-h-0 bg-transparent overflow-hidden">
+    class="relative w-full h-[100dvh-1rem] lg:h-[100dvh] flex flex-col min-h-0 bg-transparent overflow-hidden">
 
     <!-- Overlay Drop Zone Luas (Mencakup Seluruh Area Chat) -->
     <div x-show="isDragging" x-cloak x-transition:enter="transition ease-out duration-200"
