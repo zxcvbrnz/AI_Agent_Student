@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Subject;
 use App\Models\Level;
+use App\Models\UserLevel;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,25 +48,34 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // seed untuk level
-        Level::create([
-            'name' => 'Elementary',
-            'slug' => 'elementary',
-            'prompt' => 'Kamu adalah AI Tutor yang ramah. Bantu  siswa memahami materi pelajaran secara interaktif. Jawab pertanyaan dengan jelas dan sederhana.',
-            'price' => 0.00,
-        ]);
+        // Level::create([
+        //     'name' => 'Elementary',
+        //     'slug' => 'elementary',
+        //     'prompt' => 'Kamu adalah AI Tutor yang ramah. Bantu  siswa memahami materi pelajaran secara interaktif. Jawab pertanyaan dengan jelas dan sederhana.',
+        //     'price' => 0.00,
+        // ]);
 
-        Level::create([
-            'name' => 'Intermediate',
-            'slug' => 'intermediate',
-            'prompt' => 'Kamu adalah AI Tutor yang profesional. Bantu siswa memahami materi pelajaran secara mendalam. Jawab pertanyaan dengan jelas, rinci, dan sertakan contoh.',
-            'price' => 9.99,
-        ]);
+        // Level::create([
+        //     'name' => 'Intermediate',
+        //     'slug' => 'intermediate',
+        //     'prompt' => 'Kamu adalah AI Tutor yang profesional. Bantu siswa memahami materi pelajaran secara mendalam. Jawab pertanyaan dengan jelas, rinci, dan sertakan contoh.',
+        //     'price' => 9.99,
+        // ]);
 
-        Level::create([
-            'name' => 'Advanced',
-            'slug' => 'advanced',
-            'prompt' => 'Kamu adalah AI Tutor yang ahli. Bantu siswa memahami materi pelajaran secara mendalam dan kompleks. Jawab pertanyaan dengan rinci, sertakan referensi, dan berikan penjelasan tambahan jika diperlukan.',
-            'price' => 19.99,
+        // Level::create([
+        //     'name' => 'Advanced',
+        //     'slug' => 'advanced',
+        //     'prompt' => 'Kamu adalah AI Tutor yang ahli. Bantu siswa memahami materi pelajaran secara mendalam dan kompleks. Jawab pertanyaan dengan rinci, sertakan referensi, dan berikan penjelasan tambahan jika diperlukan.',
+        //     'price' => 19.99,
+        // ]);
+
+        // seed untuk user_levels  
+
+        UserLevel::create([
+            'user_id' => 5, // Ganti dengan ID user yang sesuai
+            'level_id' => 1, // Ganti dengan ID level yang sesuai
+            'membership_type' => 'pro',
+            'membership_expires_at' => now()->addYears(10),
         ]);
     }
 }
