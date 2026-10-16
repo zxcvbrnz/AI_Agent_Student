@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\StudentChat;
 use App\Livewire\Admin\UserManagement;
@@ -17,9 +18,23 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 // Route Khusus User Terautentikasi & Memiliki Membership Aktif
-Route::middleware(['auth', 'active.membership'])->group(function () {
-    Route::get('/chat', StudentChat::class)->name('dashboard');
-    // Route::get('/chat', StudentChat::class)->name('chat');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+
+    Route::middleware(['dynamic.level'])
+        ->prefix('{level}')
+        ->name('level.')
+        ->group(function () {
+
+            // URL akan menjadi: /{level}/dashboard (contoh: /sd/dashboard, /kuliah/dashboard)
+            // Nama route menjadi: level.dashboard
+            Route::get('/chat', [StudentChat::class, 'index'])->name('chat');
+        });
+
+    // Route::middleware(['active.membership'])->group(function () {
+    //     Route::get('/chat', StudentChat::class)->name('chat');
+    // });
 });
 
 // Route Tampilan Jika Membership Habis

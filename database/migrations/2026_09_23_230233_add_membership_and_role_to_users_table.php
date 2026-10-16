@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('role')->default('user')->after('email'); // admin, user
-            $table->string('membership_type')->default('free_trial')->after('role'); // free_trial, pro, expired
-            $table->timestamp('membership_expires_at')->nullable()->after('membership_type');
+            // $table->string('membership_type')->default('free_trial')->after('role'); // free_trial, pro, expired
+            // $table->timestamp('membership_expires_at')->nullable()->after('membership_type');
         });
     }
 

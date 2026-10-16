@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Carbon\Carbon;
 
 class User extends Authenticatable
@@ -59,5 +60,12 @@ class User extends Authenticatable
         }
 
         return now()->lessThanOrEqualTo($this->membership_expires_at);
+    }
+
+    public function levels(): BelongsToMany
+    {
+        return $this->belongsToMany(Level::class, 'level_user')
+            ->withPivot(['membership_type', 'membership_expired_at'])
+            ->withTimestamps();
     }
 }

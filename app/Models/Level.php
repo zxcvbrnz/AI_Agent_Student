@@ -3,8 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Level extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'slug',
+        'prompt',
+        'price',
+    ];
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'level_user')
+            ->withPivot(['membership_type', 'membership_expired_at'])
+            ->withTimestamps();
+    }
 }
