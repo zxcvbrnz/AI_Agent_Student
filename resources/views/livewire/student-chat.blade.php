@@ -163,7 +163,7 @@
                             class="text-indigo-600 uppercase">{{ $membershipType }}</strong></span>
                     <span class="text-slate-300">|</span>
                     <span class="text-slate-500">Aktif:
-                        {{ $expiresAt ? $expiresAt->diffForHumans() : 'Selamanya / Tidak Aktif' }}</span>
+                        {{ $expiresAt }}</span>
                 </div>
             </div>
         </div>
