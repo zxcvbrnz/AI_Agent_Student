@@ -54,7 +54,7 @@
         </div>
 
         <!-- Livewire Sidebar Component -->
-        @if (!route('dashboard'))
+        @if (!request()->routeIs('dashboard'))
             <livewire:layout.navigation />
         @endif
 
