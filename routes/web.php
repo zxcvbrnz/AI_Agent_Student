@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
 
             // URL akan menjadi: /{level}/dashboard (contoh: /sd/dashboard, /kuliah/dashboard)
             // Nama route menjadi: level.dashboard
-            Route::get('/chat', [StudentChat::class, 'index'])->name('chat');
+            Route::get('/chat', StudentChat::class)->name('chat');
         });
 
     // Route::middleware(['active.membership'])->group(function () {
