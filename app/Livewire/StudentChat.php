@@ -6,7 +6,9 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Subject;
 use App\Models\ChatHistory; // Import Model ChatHistory
+use App\Models\Level;
 use App\Services\GeminiService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class StudentChat extends Component
@@ -19,8 +21,37 @@ class StudentChat extends Component
     public $files = [];
     public $chatHistory = [];
 
-    public function mount()
+    public $level;
+    public $membershipType = '-';
+    public $expiresAt = null;
+
+
+    public function mount($level)
     {
+        $this->level = $level;
+
+        if ($level) {
+            // Cari data level berdasarkan slug di URL
+            $levelData = Level::where('slug', $level)->first();
+
+            if ($levelData) {
+                // Ambil data user yang sedang login beserta relasi pivot-nya
+                $user = auth()->user();
+                $userLevel = $user->levels()
+                    ->where('levels.id', $levelData->id)
+                    ->first();
+
+                // Jika user terdaftar di level ini, ambil data pivotnya
+                if ($userLevel && $userLevel->pivot) {
+                    $this->membershipType = $userLevel->pivot->membership_type ?? '-';
+
+                    if ($userLevel->pivot->membership_expires_at) {
+                        $this->expiresAt = Carbon::parse($userLevel->pivot->membership_expires_at);
+                    }
+                }
+            }
+        }
+
         $this->subjects = Subject::all();
         if ($this->subjects->isNotEmpty()) {
             $this->selectedSubjectId = $this->subjects->first()->id;

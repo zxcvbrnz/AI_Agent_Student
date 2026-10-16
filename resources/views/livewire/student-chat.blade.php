@@ -160,9 +160,10 @@
                 <div
                     class="hidden md:flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-xl text-xs">
                     <span class="text-slate-600">Paket: <strong
-                            class="text-indigo-600 uppercase">{{ $user->membership_type }}</strong></span>
+                            class="text-indigo-600 uppercase">{{ $membershipType }}</strong></span>
                     <span class="text-slate-300">|</span>
-                    <span class="text-slate-500">Aktif: {{ $expiresAt ? $expiresAt->diffForHumans() : '-' }}</span>
+                    <span class="text-slate-500">Aktif:
+                        {{ $expiresAt ? $expiresAt->diffForHumans() : 'Selamanya / Tidak Aktif' }}</span>
                 </div>
             </div>
         </div>
