@@ -17,7 +17,7 @@ class Level extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_levels')
-            ->withPivot(['membership_type', 'membership_expired_at'])
+            ->withPivot(['membership_type', 'membership_expires_at'])
             ->withTimestamps();
     }
 }
