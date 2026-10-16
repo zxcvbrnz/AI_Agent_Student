@@ -4,6 +4,13 @@ use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
 
 new class extends Component {
+    public $level;
+
+    public function mount($level = null)
+    {
+        $this->level = $level;
+    }
+
     public function logout(Logout $logout): void
     {
         $logout();
@@ -76,7 +83,7 @@ new class extends Component {
                     Main Menu
                 </div>
 
-                <x-responsive-nav-link :href="route('level.chat', ['level' => $level->slug])" :active="request()->routeIs('level.chat')" wire:navigate
+                <x-responsive-nav-link :href="route('level.chat', ['level' => $level])" :active="request()->routeIs('level.chat')" wire:navigate
                     class="rounded-md flex items-center">
                     <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
