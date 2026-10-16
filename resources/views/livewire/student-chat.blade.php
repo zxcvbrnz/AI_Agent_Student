@@ -138,7 +138,7 @@
     </div>
 
     <!-- 1. Header Utama Page -->
-    <div class="flex-none bg-transparent border-b border-slate-200 px-4 ps-6 lg:ps-0 py-2 space-y-2 z-10">
+    <div class="flex-none bg-transparent border-b border-slate-200 ps-10 lg:ps-4 pe-4 py-2 space-y-2 z-10">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">{{ $currentSubject->icon ?? '🤖' }}</span>
