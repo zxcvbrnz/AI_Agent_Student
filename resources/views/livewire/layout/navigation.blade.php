@@ -37,9 +37,8 @@ new class extends Component {
         :style="window.innerWidth < 1024 ? (mobileOpen ? 'transform: translateX(0px); width: 16rem;' :
             'transform: translateX(-100%);') : ''">
 
-        <!-- Header Sidebar: Logo & Close/Open Buttons (Disembunyikan di Mobile, Muncul di Desktop lg:) -->
-        <div
-            class="h-16 hidden lg:flex items-center justify-between px-4 border-b border-gray-100 shrink-0 overflow-hidden">
+        <!-- Header Sidebar: Logo & Close/Open Buttons -->
+        <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 shrink-0 overflow-hidden">
             <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
                 <x-application-logo class="block h-8 w-auto fill-current text-indigo-600 shrink-0" />
                 <span
@@ -66,13 +65,10 @@ new class extends Component {
                         d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                 </svg>
             </button>
-        </div>
 
-        <!-- Tombol Close khusus Mobile (Opsional jika ingin ditaruh di dalam sidebar karena header utamanya disembunyikan) -->
-        <div class="flex lg:hidden items-center justify-between p-4 border-b border-gray-100 shrink-0">
-            <span class="font-bold text-gray-800">{{ config('app.name', 'Laravel') }}</span>
+            <!-- Toggle Close (Mobile) -->
             <button @click="mobileOpen = false"
-                class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition shrink-0">
+                class="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -160,7 +156,7 @@ new class extends Component {
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 title="Kelola Subject">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
                             <span class="whitespace-nowrap transition-opacity duration-300"
                                 :class="{ 'lg:hidden': !sidebarOpen }">{{ __('Kelola Subject') }}</span>
