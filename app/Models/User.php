@@ -18,14 +18,11 @@ class User extends Authenticatable
         'password',
         'role',
         'google_id',
-        'membership_type',
-        'membership_expires_at',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'membership_expires_at' => 'datetime',
     ];
 
     // Otomatis kasih Free Trial 1 Hari saat User baru terdaftar

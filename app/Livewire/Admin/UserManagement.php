@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
+use App\Models\Level;
 use Carbon\Carbon;
 
 class UserManagement extends Component
@@ -12,46 +13,82 @@ class UserManagement extends Component
     use WithPagination;
 
     public $search = '';
-    public $selectedUserId = null;
-    public $addDays = 30; // Default 1 bulan (30 hari)
+    public $addDays = 30; // Default 30 hari
     public $membershipType = 'pro';
+    public $selectedLevelId = null; // Level yang dipilih untuk aksi membership
 
     public function extendMembership($userId)
     {
-        $user = User::findOrFail($userId);
-
-        // Jika sudah kedaluwarsa, hitung dari hari ini. Jika masih aktif, tambahkan dari tanggal expired sebelumnya.
-        $baseDate = ($user->membership_expires_at && $user->membership_expires_at->isFuture())
-            ? $user->membership_expires_at
-            : now();
-
-        $user->update([
-            'membership_type' => $this->membershipType,
-            'membership_expires_at' => $baseDate->addDays((int)$this->addDays),
+        $this->validate([
+            'selectedLevelId' => 'required|exists:levels,id',
+        ], [
+            'selectedLevelId.required' => 'Pilih level terlebih dahulu sebelum memperpanjang membership.',
         ]);
 
-        session()->flash('message', "Membership {$user->name} berhasil diperbarui hingga " . $user->membership_expires_at->format('d M Y H:i'));
+        $user = User::findOrFail($userId);
+        $levelId = $this->selectedLevelId;
+
+        // Ambil data pivot yang sudah ada untuk level ini
+        $currentPivot = $user->levels()->where('level_id', $levelId)->first();
+
+        $expiresAt = $currentPivot ? $currentPivot->pivot->membership_expires_at : null;
+        $expiresAtDate = $expiresAt ? Carbon::parse($expiresAt) : null;
+
+        // Jika sudah kedaluwarsa atau belum ada, hitung dari hari ini. Jika masih aktif, tambahkan dari tanggal expired sebelumnya.
+        $baseDate = ($expiresAtDate && $expiresAtDate->isFuture())
+            ? $expiresAtDate
+            : now();
+
+        $newExpiresAt = $baseDate->addDays((int)$this->addDays);
+
+        // Update atau attach ke tabel pivot user_levels
+        $user->levels()->syncWithoutDetaching([
+            $levelId => [
+                'membership_type' => $this->membershipType,
+                'membership_expires_at' => $newExpiresAt,
+            ]
+        ]);
+
+        $level = Level::find($levelId);
+        session()->flash('message', "Membership {$user->name} untuk level [{$level->name}] berhasil diperbarui hingga " . $newExpiresAt->format('d M Y H:i'));
     }
 
     public function setExpired($userId)
     {
-        $user = User::findOrFail($userId);
-        $user->update([
-            'membership_type' => 'expired',
-            'membership_expires_at' => now()->subSecond(),
+        $this->validate([
+            'selectedLevelId' => 'required|exists:levels,id',
+        ], [
+            'selectedLevelId.required' => 'Pilih level terlebih dahulu sebelum menghentikan membership.',
         ]);
 
-        session()->flash('message', "Membership {$user->name} telah dihentikan.");
+        $user = User::findOrFail($userId);
+        $levelId = $this->selectedLevelId;
+
+        // Set expired di tabel pivot
+        $user->levels()->syncWithoutDetaching([
+            $levelId => [
+                'membership_type' => 'expired',
+                'membership_expires_at' => now()->subSecond(),
+            ]
+        ]);
+
+        $level = Level::find($levelId);
+        session()->flash('message', "Membership {$user->name} untuk level [{$level->name}] telah dihentikan.");
     }
 
     public function render()
     {
-        $users = User::where('name', 'like', '%' . $this->search . '%')
+        // Ambil data user beserta relasi levels agar bisa ditampilkan statusnya per level
+        $users = User::with('levels')
+            ->where('name', 'like', '%' . $this->search . '%')
             ->orWhere('email', 'like', '%' . $this->search . '%')
             ->paginate(10);
 
+        $levels = Level::all(); // Untuk dropdown pilihan level pada panel admin
+
         return view('livewire.admin.user-management', [
-            'users' => $users
+            'users' => $users,
+            'levels' => $levels,
         ])->layout('layouts.app');
     }
 }
