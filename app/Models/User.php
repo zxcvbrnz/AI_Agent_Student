@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public function levels(): BelongsToMany
     {
-        return $this->belongsToMany(Level::class, 'level_user')
+        return $this->belongsToMany(Level::class, 'user_levels')
             ->withPivot(['membership_type', 'membership_expired_at'])
             ->withTimestamps();
     }
