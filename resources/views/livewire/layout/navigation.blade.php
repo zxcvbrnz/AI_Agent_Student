@@ -100,7 +100,7 @@ new class extends Component {
                 </x-responsive-nav-link>
 
                 <!-- TOMBOL GANTI LEVEL -->
-                <x-responsive-nav-link href="{{ route('level.selection') ?? '#' }}" wire:navigate
+                <x-responsive-nav-link href="{{ route('dashboard') }}" wire:navigate
                     class="rounded-md flex items-center text-indigo-600 hover:text-indigo-700">
                     <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
