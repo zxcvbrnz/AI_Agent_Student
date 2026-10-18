@@ -32,24 +32,23 @@ Route::middleware(['auth'])->group(function () {
             // Nama route menjadi: level.dashboard
             Route::get('/chat', StudentChat::class)->name('chat');
             Route::view('profile', 'profile')->name('profile');
+
+            // Route Khusus Admin
+            Route::middleware(['is.admin'])->prefix('admin')->group(function () {
+                Route::get('/manage-users', UserManagement::class)->name('admin.users');
+                Route::get('/manage-levels', LevelManagement::class)->name('admin.level');
+                Route::get('/core-prompts', ManageCorePrompts::class)->name('admin.core-prompts');
+                Route::get('/subjects', SubjectManager::class)->name('admin.subjects');
+            });
         });
 
     // Route::middleware(['active.membership'])->group(function () {
     //     Route::get('/chat', StudentChat::class)->name('chat');
     // });
-});
-
-// Route Tampilan Jika Membership Habis
-Route::middleware(['auth'])->get('/membership-expired', function () {
-    return view('membership-expired');
-})->name('membership.expired');
-
-// Route Khusus Admin
-Route::middleware(['auth', 'is.admin'])->prefix('admin')->group(function () {
-    Route::get('/manage-users', UserManagement::class)->name('admin.users');
-    Route::get('/manage-levels', LevelManagement::class)->name('admin.level');
-    Route::get('/core-prompts', ManageCorePrompts::class)->name('admin.core-prompts');
-    Route::get('/subjects', SubjectManager::class)->name('admin.subjects');
+    // Route Tampilan Jika Membership Habis
+    Route::get('/membership-expired', function () {
+        return view('membership-expired');
+    })->name('membership.expired');
 });
 
 require __DIR__ . '/auth.php';
