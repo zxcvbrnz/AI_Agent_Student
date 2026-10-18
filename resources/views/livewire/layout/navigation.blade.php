@@ -125,7 +125,7 @@ new class extends Component {
                     </div>
 
                     <!-- Kelola Pengguna -->
-                    <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.users', ['level' => $currentLevel])" :active="request()->routeIs('admin.users')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -139,7 +139,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Level -->
-                    <x-responsive-nav-link :href="route('admin.level')" :active="request()->routeIs('admin.level')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.level', ['level' => $currentLevel])" :active="request()->routeIs('admin.level')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -153,7 +153,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Core Prompts -->
-                    <x-responsive-nav-link :href="route('admin.core-prompts')" :active="request()->routeIs('admin.core-prompts')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.core-prompts', ['level' => $currentLevel])" :active="request()->routeIs('admin.core-prompts')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -167,7 +167,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Subject -->
-                    <x-responsive-nav-link :href="route('admin.subjects')" :active="request()->routeIs('admin.subjects')" wire:navigate
+                    <x-responsive-nav-link :href="route('admin.subjects', ['level' => $currentLevel])" :active="request()->routeIs('admin.subjects')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
