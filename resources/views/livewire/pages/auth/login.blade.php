@@ -19,8 +19,29 @@ new #[Layout('layouts.guest')] class extends Component {
 
         Session::regenerate();
 
-        // Tentukan default route berdasarkan role user
-        $defaultRoute = auth()->user()->isAdmin() ? route('admin.users', absolute: false) : route('dashboard', absolute: false);
+        $user = auth()->user();
+
+        // Jika admin, arahkan ke halaman manajemen user admin (atau sesuaikan prefix adminnya)
+        if ($user->isAdmin()) {
+            $defaultRoute = route('admin.users', absolute: false);
+        } else {
+            // Ambil level pertama yang memiliki membership aktif atau level yang dimiliki user
+            // Menggunakan relasi levels() yang sudah kita buat sebelumnya
+            $activeLevel = $user
+                ->levels()
+                ->where(function ($query) {
+                    $query->whereNull('membership_expires_at')->orWhere('membership_expires_at', '>', now());
+                })
+                ->first();
+
+            // Jika user memiliki level aktif, arahkan ke route level chat mereka (misal: /tes/chat)
+            if ($activeLevel) {
+                $defaultRoute = route('level.chat', ['level' => $activeLevel->slug], absolute: false);
+            } else {
+                // Jika tidak ada level aktif, arahkan ke dashboard pemilihan level
+                $defaultRoute = route('dashboard', absolute: false);
+            }
+        }
 
         $this->redirectIntended(default: $defaultRoute, navigate: true);
     }
