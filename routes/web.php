@@ -25,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['dynamic.level'])
         ->prefix('{level}')
-        // ->name('level.')
+        ->name('level.')
         ->group(function () {
 
             // URL akan menjadi: /{level}/dashboard (contoh: /sd/dashboard, /kuliah/dashboard)

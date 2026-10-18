@@ -86,8 +86,8 @@ new class extends Component {
                 </div>
 
                 <x-responsive-nav-link
-                    href="{{ $currentLevel ? route('chat', ['level' => $currentLevel]) : route('dashboard') }}"
-                    :active="request()->routeIs('chat')" wire:navigate class="rounded-md flex items-center">
+                    href="{{ $currentLevel ? route('level.chat', ['level' => $currentLevel]) : route('dashboard') }}"
+                    :active="request()->routeIs('level.chat')" wire:navigate class="rounded-md flex items-center">
                     <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             title="AI Chat">
@@ -125,7 +125,7 @@ new class extends Component {
                     </div>
 
                     <!-- Kelola Pengguna -->
-                    <x-responsive-nav-link :href="route('admin.users', ['level' => $currentLevel])" :active="request()->routeIs('admin.users')" wire:navigate
+                    <x-responsive-nav-link :href="route('level.admin.users', ['level' => $currentLevel])" :active="request()->routeIs('admin.users')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -139,7 +139,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Level -->
-                    <x-responsive-nav-link :href="route('admin.level', ['level' => $currentLevel])" :active="request()->routeIs('admin.level')" wire:navigate
+                    <x-responsive-nav-link :href="route('level.admin.level', ['level' => $currentLevel])" :active="request()->routeIs('admin.level')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -153,7 +153,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Core Prompts -->
-                    <x-responsive-nav-link :href="route('admin.core-prompts', ['level' => $currentLevel])" :active="request()->routeIs('admin.core-prompts')" wire:navigate
+                    <x-responsive-nav-link :href="route('level.admin.core-prompts', ['level' => $currentLevel])" :active="request()->routeIs('admin.core-prompts')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -167,7 +167,7 @@ new class extends Component {
                     </x-responsive-nav-link>
 
                     <!-- Kelola Subject -->
-                    <x-responsive-nav-link :href="route('admin.subjects', ['level' => $currentLevel])" :active="request()->routeIs('admin.subjects')" wire:navigate
+                    <x-responsive-nav-link :href="route('level.admin.subjects', ['level' => $currentLevel])" :active="request()->routeIs('admin.subjects')" wire:navigate
                         class="rounded-md flex items-center">
                         <div class="flex items-center gap-3 w-full" :class="{ 'justify-center': !sidebarOpen }">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -187,7 +187,7 @@ new class extends Component {
         <!-- Footer Sidebar: User Profile & Log Out Langsung -->
         <div class="p-3 border-t border-gray-200 bg-gray-50/50 shrink-0 space-y-2">
             <!-- Info User / Tombol Profile -->
-            <a href="{{ route('profile', ['level' => $currentLevel]) }}" wire:navigate
+            <a href="{{ route('level.profile', ['level' => $currentLevel]) }}" wire:navigate
                 class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition text-left overflow-hidden"
                 :class="{ 'justify-center': !sidebarOpen }" title="Profile">
                 <div
