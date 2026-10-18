@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
             // URL akan menjadi: /{level}/dashboard (contoh: /sd/dashboard, /kuliah/dashboard)
             // Nama route menjadi: level.dashboard
             Route::get('/chat', StudentChat::class)->name('chat');
-            Route::view('profile', 'profile')->name('profile');
+            Route::view('/profile', 'profile')->name('profile');
 
             // Route Khusus Admin
             Route::middleware(['is.admin'])->prefix('admin')->group(function () {
