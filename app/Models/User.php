@@ -26,18 +26,14 @@ class User extends Authenticatable
     ];
 
     // Otomatis kasih Free Trial 1 Hari saat User baru terdaftar
-    protected static function booted()
-    {
-        static::creating(function ($user) {
-            if (!$user->role) {
-                $user->role = 'user';
-            }
-            if (!$user->membership_expires_at) {
-                $user->membership_type = 'free_trial';
-                $user->membership_expires_at = now()->addDay(); // Free Trial 1 Hari (24 Jam)
-            }
-        });
-    }
+    // protected static function booted()
+    // {
+    //     static::creating(function ($user) {
+    //         if (!$user->role) {
+    //             $user->role = 'user';
+    //         }
+    //     });
+    // }
 
     // Helper: Cek apakah user adalah Admin
     public function isAdmin(): bool
