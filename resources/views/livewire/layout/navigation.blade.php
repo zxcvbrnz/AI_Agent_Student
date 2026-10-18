@@ -187,7 +187,7 @@ new class extends Component {
         <!-- Footer Sidebar: User Profile & Log Out Langsung -->
         <div class="p-3 border-t border-gray-200 bg-gray-50/50 shrink-0 space-y-2">
             <!-- Info User / Tombol Profile -->
-            <a href="{{ route('profile') }}" wire:navigate
+            <a href="{{ route('profile', ['level' => $currentLevel]) }}" wire:navigate
                 class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition text-left overflow-hidden"
                 :class="{ 'justify-center': !sidebarOpen }" title="Profile">
                 <div
