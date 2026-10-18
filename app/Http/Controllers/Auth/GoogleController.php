@@ -40,7 +40,26 @@ class GoogleController extends Controller
 
             Auth::login($user);
 
-            return redirect()->intended(route('dashboard'));
+            // Tentukan default redirect berdasarkan role atau kepemilikan level aktif
+            if ($user->isAdmin()) {
+                $defaultRoute = route('admin.users', absolute: false);
+            } else {
+                // Cek level aktif yang dimiliki user
+                $activeLevel = $user->levels()
+                    ->where(function ($query) {
+                        $query->whereNull('membership_expires_at')
+                            ->orWhere('membership_expires_at', '>', now());
+                    })
+                    ->first();
+
+                if ($activeLevel) {
+                    $defaultRoute = route('level.chat', ['level' => $activeLevel->slug], absolute: false);
+                } else {
+                    $defaultRoute = route('dashboard', absolute: false);
+                }
+            }
+
+            return redirect()->intended($defaultRoute);
         } catch (\Exception $e) {
             return redirect('/login')->with('error', 'Gagal login menggunakan Google.');
         }
